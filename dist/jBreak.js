@@ -111,6 +111,13 @@ angular.module("ngLocale", [], ["$provide", function ($provide) {
     });
 }]);
 
+angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
+    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('jBreak')
+            .setNotify(true, true);
+    }]);
+
 (function () {
 
     var module = angular.module('jb', []),
@@ -120,6 +127,7 @@ angular.module("ngLocale", [], ["$provide", function ($provide) {
         this.nextUid = nextUid;
         this.fmt = fmt;
     });
+
 
 
     function fmt() {
@@ -321,7 +329,6 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 ctx.filter.page = page;
                 refresh();
             }
-
             function edit(idx) {
                 ctx.editIdx = idx;
                 ctx.editItem = idx === -1 ? res.create() : ctx.editItem = ng.copy(ctx.lst[idx]);
@@ -506,7 +513,6 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 ctx.editIdx = null;
                 ctx.lst = res.del({id: id}, {});
             }
-
             function save() {
                 (ctx.beforeSave || ng.noop)();
                 res.save(ctx.editItem, function (data) {
@@ -1308,13 +1314,14 @@ angular.module('jb.ui')
                         scope[key] = $sce.trustAsHtml(newValue);
                     });
                 });
-                attr.jbAlert && scope.$watch(attr.jbAlert, function (newValue, oldValue) {
-                    if (angular.isObject(newValue)) {
-                        angular.extend(scope, newValue);
-                    } else {
-                        scope.content = newValue;
-                    }
-                }, true);
+                if (attr.jbAlert)
+                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                    }, true);
 
                 var alert = $jbAlert(options);
 
@@ -3608,57 +3615,6 @@ angular.module('jb.ui')
     }]);
 
 angular.module('jb.ui')
-    .directive('jbRadioList', ["$parse", function ($parse) {
-        return {
-            restrict: 'ECA',
-            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
-            templateUrl: "jb/ui/radioList/radioList.tpl.html",
-            link: function (scope, element, attrs) {
-                if (!angular.isArray(scope.jbSrc)) {
-                    throw "jbSrc must be array!";
-                }
-                scope.selection = '';
-                scope.otherVal = '';
-                setup(scope.jbVal);
-                function setup(val) {
-                    if (val) {
-                        if (scope.jbSrc.indexOf(val) > -1) {
-                            scope.selection = val;
-                        } else if (scope.jbOther) {
-                            scope.selection = 'other';
-                            scope.otherVal = val;
-                        } else {
-                            scope.selection = '';
-                            scope.otherVal = '';
-                        }
-                    }
-                }
-
-                function updateJbVal() {
-                    scope.jbVal = scope.selection === 'other' ? scope.otherVal : scope.selection;
-                }
-
-                scope.select = function select(val) {
-                    scope.selection = val;
-                    if (val !== 'other') {
-                        scope.otherVal = '';
-                    }
-                    updateJbVal();
-                };
-
-                scope.$watch('otherVal', function (newval) {
-                    if (newval) {
-                        scope.selection = 'other';
-                    }
-                    updateJbVal();
-                });
-
-                scope.$watch('jbVal', setup);
-            }
-        };
-    }]);
-
-angular.module('jb.ui')
     .provider('$jbPop', function () {
 
         var defaults = this.defaults = {
@@ -3770,6 +3726,57 @@ angular.module('jb.ui')
         };
 
     }]);
+angular.module('jb.ui')
+    .directive('jbRadioList', ["$parse", function ($parse) {
+        return {
+            restrict: 'ECA',
+            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
+            templateUrl: "jb/ui/radioList/radioList.tpl.html",
+            link: function (scope, element, attrs) {
+                if (!angular.isArray(scope.jbSrc)) {
+                    throw "jbSrc must be array!";
+                }
+                scope.selection = '';
+                scope.otherVal = '';
+                setup(scope.jbVal);
+                function setup(val) {
+                    if (val) {
+                        if (scope.jbSrc.indexOf(val) > -1) {
+                            scope.selection = val;
+                        } else if (scope.jbOther) {
+                            scope.selection = 'other';
+                            scope.otherVal = val;
+                        } else {
+                            scope.selection = '';
+                            scope.otherVal = '';
+                        }
+                    }
+                }
+
+                function updateJbVal() {
+                    scope.jbVal = scope.selection === 'other' ? scope.otherVal : scope.selection;
+                }
+
+                scope.select = function select(val) {
+                    scope.selection = val;
+                    if (val !== 'other') {
+                        scope.otherVal = '';
+                    }
+                    updateJbVal();
+                };
+
+                scope.$watch('otherVal', function (newval) {
+                    if (newval) {
+                        scope.selection = 'other';
+                    }
+                    updateJbVal();
+                });
+
+                scope.$watch('jbVal', setup);
+            }
+        };
+    }]);
+
 (function () {
     var module = angular.module('jb.ui');
 
@@ -5290,7 +5297,6 @@ angular.module('jb.ui')
     function tableCtr($scope) {
 
     }
-
     tableCtr.$inject = ["$scope"];
 
     module.directive('jbTable', ['$compile', '$q', '$parse',
@@ -5386,7 +5392,6 @@ angular.module('jb.ui')
             ctrl.pipe();
             resize();
         }
-
         function copyRefs(src) {
             return src ? [].concat(src) : [];
         }
@@ -5488,7 +5493,6 @@ angular.module('jb.ui')
             return td;
         }
     }
-
     tableCtr.$inject = ["$scope", "$element", "$attrs", "$filter", "$parse", "$timeout", "$window", "$jb"];
 
     module.directive('jbTable2', ["$compile", "$q", "$parse", function ($compile, $q, $parse) {
@@ -5561,13 +5565,6 @@ angular.module('jb.ui')
     );
 })(angular);
 
-angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
-    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-        localStorageServiceProvider
-            .setPrefix('jBreak')
-            .setNotify(true, true);
-    }]);
-
 (function (module) {
     try {
         module = angular.module('jb.ui.tpls');
@@ -5589,6 +5586,18 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
     module.run(['$templateCache', function ($templateCache) {
         $templateCache.put('jb/ui/aside/aside.tpl.html',
             '<div class="modal" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="aside-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'left\':$placement==\'left\'}"><div class="aside-content"><div class="aside-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="aside-title" ng-bind="title"></h4></div><div class="aside-body" ng-bind="content"></div><div class="aside-footer"><button type="button" class="btn btn-default" ng-click="$hide()">Close</button></div></div></div></div>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/checkList/checkList.tpl.html',
+            '<label class="checkbox-inline" ng-repeat="s in jbSrc"><input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}</label> <label class="checkbox-inline" ng-show="jbOther"><input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
     }]);
 })();
 
@@ -5623,8 +5632,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/checkList/checkList.tpl.html',
-            '<label class="checkbox-inline" ng-repeat="s in jbSrc"><input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}</label> <label class="checkbox-inline" ng-show="jbOther"><input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
+        $templateCache.put('jb/ui/dropdown/dropdown.tpl.html',
+            '<ul tabindex="-1" class="dropdown-menu" role="menu"><li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content"><a role="menuitem" tabindex="-1" ng-href="{{item.href}}" ng-if="!item.divider && item.href" target="{{item.target || \'\'}}" ng-bind="item.text"></a> <a role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="!item.divider && item.click" ng-click="$eval(item.click);$hide()" ng-bind="item.text"></a></li></ul>');
     }]);
 })();
 
@@ -5635,8 +5644,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/dropdown/dropdown.tpl.html',
-            '<ul tabindex="-1" class="dropdown-menu" role="menu"><li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content"><a role="menuitem" tabindex="-1" ng-href="{{item.href}}" ng-if="!item.divider && item.href" target="{{item.target || \'\'}}" ng-bind="item.text"></a> <a role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="!item.divider && item.click" ng-click="$eval(item.click);$hide()" ng-bind="item.text"></a></li></ul>');
+        $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
+            '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
     }]);
 })();
 
@@ -5683,8 +5692,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
-            '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
+        $templateCache.put('jb/ui/modal/modal.tpl.html',
+            '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
     }]);
 })();
 
@@ -5695,8 +5704,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/modal/modal.tpl.html',
-            '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
+        $templateCache.put('jb/ui/popover/popover.tpl.html',
+            '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
     }]);
 })();
 
@@ -5743,8 +5752,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/popover/popover.tpl.html',
-            '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
+        $templateCache.put('jb/ui/select/select.tpl.html',
+            '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
     }]);
 })();
 
@@ -5755,8 +5764,32 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/select/select.tpl.html',
-            '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
+        $templateCache.put('jb/ui/tabs/tab.tpl.html',
+            '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
+            '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/tabs/tabset.tpl.html',
+            '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
     }]);
 })();
 
@@ -5815,42 +5848,6 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tab.tpl.html',
-            '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
-            '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset.tpl.html',
-            '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
         $templateCache.put('jb/ui/tooltip/tooltip.tpl.html',
             '<div class="tooltip in" ng-show="title"><div class="tooltip-arrow"></div><div class="tooltip-inner" ng-bind="title"></div></div>');
     }]);
@@ -5870,7 +5867,7 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
 
 /**
  * An Angular module that gives you access to the browsers local storage
- * @version v0.1.5 - 2014-11-04
+ * @version v0.2.2 - 2015-05-29
  * @link https://github.com/grevory/angular-local-storage
  * @author grevory <greg@gregpike.ca>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -5885,22 +5882,13 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         isObject = angular.isObject,
         isArray = angular.isArray,
         extend = angular.extend,
-        toJson = angular.toJson,
-        fromJson = angular.fromJson;
-
-
-// Test if string is only contains numbers
-// e.g '1' => true, "'1'" => true
-    function isStringNumber(num) {
-        return /^-?\d+\.?\d*$/.test(num.replace(/["']/g, ''));
-    }
-
+        toJson = angular.toJson;
     var angularLocalStorage = angular.module('LocalStorageModule', []);
 
     angularLocalStorage.provider('localStorageService', function () {
 
         // You should set a prefix to avoid overwriting any local storage variables from the rest of your app
-        // e.g. localStorageServiceProvider.setPrefix('youAppName');
+        // e.g. localStorageServiceProvider.setPrefix('yourAppName');
         // With provider you can use config as this:
         // myApp.config(function (localStorageServiceProvider) {
         //    localStorageServiceProvider.prefix = 'yourAppName';
@@ -5938,10 +5926,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
 
         // Setter for cookie config
         this.setStorageCookie = function (exp, path) {
-            this.cookie = {
-                expiry: exp,
-                path: path
-            };
+            this.cookie.expiry = exp;
+            this.cookie.path = path;
             return this;
         };
 
@@ -6008,7 +5994,6 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                 }
             }());
 
-
             // Directly adds a value to local storage
             // If local storage is not available in the browser use cookies
             // Example use: localStorageService.add('library','angular');
@@ -6016,7 +6001,7 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                 // Let's convert undefined values to null to get the value consistent
                 if (isUndefined(value)) {
                     value = null;
-                } else if (isObject(value) || isArray(value) || isNumber(+value || value)) {
+                } else {
                     value = toJson(value);
                 }
 
@@ -6037,9 +6022,6 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                 }
 
                 try {
-                    if (isObject(value) || isArray(value)) {
-                        value = toJson(value);
-                    }
                     if (webStorage) {
                         webStorage.setItem(deriveQualifiedKey(key), value)
                     }
@@ -6077,43 +6059,47 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                     return null;
                 }
 
-                if (item.charAt(0) === "{" || item.charAt(0) === "[" || isStringNumber(item)) {
-                    return fromJson(item);
+                try {
+                    return JSON.parse(item);
+                } catch (e) {
+                    return item;
                 }
-
-                return item;
             };
 
             // Remove an item from local storage
             // Example use: localStorageService.remove('library'); // removes the key/value pair of library='angular'
-            var removeFromLocalStorage = function (key) {
-                if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
-                    if (!browserSupportsLocalStorage) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                    }
+            var removeFromLocalStorage = function () {
+                var i, key;
+                for (i = 0; i < arguments.length; i++) {
+                    key = arguments[i];
+                    if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+                        if (!browserSupportsLocalStorage) {
+                            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+                        }
 
-                    if (notify.removeItem) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
-                            key: key,
-                            storageType: 'cookie'
-                        });
+                        if (notify.removeItem) {
+                            $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
+                                key: key,
+                                storageType: 'cookie'
+                            });
+                        }
+                        removeFromCookies(key);
                     }
-                    return removeFromCookies(key);
-                }
-
-                try {
-                    webStorage.removeItem(deriveQualifiedKey(key));
-                    if (notify.removeItem) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
-                            key: key,
-                            storageType: self.storageType
-                        });
+                    else {
+                        try {
+                            webStorage.removeItem(deriveQualifiedKey(key));
+                            if (notify.removeItem) {
+                                $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
+                                    key: key,
+                                    storageType: self.storageType
+                                });
+                            }
+                        } catch (e) {
+                            $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+                            removeFromCookies(key);
+                        }
                     }
-                } catch (e) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                    return removeFromCookies(key);
                 }
-                return true;
             };
 
             // Return array of keys for local storage
@@ -6147,16 +6133,15 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
             // Should be used mostly for development purposes
             var clearAllFromLocalStorage = function (regularExpression) {
 
-                regularExpression = regularExpression || "";
-                //accounting for the '.' in the prefix when creating a regex
-                var tempPrefix = prefix.slice(0, -1);
-                var testRegex = new RegExp(tempPrefix + '.' + regularExpression);
+                // Setting both regular expressions independently
+                // Empty strings result in catchall RegExp
+                var prefixRegex = !!prefix ? new RegExp('^' + prefix) : new RegExp();
+                var testRegex = !!regularExpression ? new RegExp(regularExpression) : new RegExp();
 
                 if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
                     if (!browserSupportsLocalStorage) {
                         $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
                     }
-
                     return clearAllFromCookies();
                 }
 
@@ -6164,7 +6149,7 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
 
                 for (var key in webStorage) {
                     // Only remove items that are for this app and match the regular expression
-                    if (testRegex.test(key)) {
+                    if (prefixRegex.test(key) && testRegex.test(key.substr(prefixLength))) {
                         try {
                             removeFromLocalStorage(key.substr(prefixLength));
                         } catch (e) {
@@ -6191,7 +6176,7 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
             // Directly adds a value to cookies
             // Typically used as a fallback is local storage is not available in the browser
             // Example use: localStorageService.cookie.add('library','angular');
-            var addToCookies = function (key, value) {
+            var addToCookies = function (key, value, daysToExpiry) {
 
                 if (isUndefined(value)) {
                     return false;
@@ -6214,6 +6199,9 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                         expiryDate.setTime(expiryDate.getTime() + (-1 * 24 * 60 * 60 * 1000));
                         expiry = "; expires=" + expiryDate.toGMTString();
                         value = '';
+                    } else if (isNumber(daysToExpiry) && daysToExpiry !== 0) {
+                        expiryDate.setTime(expiryDate.getTime() + (daysToExpiry * 24 * 60 * 60 * 1000));
+                        expiry = "; expires=" + expiryDate.toGMTString();
                     } else if (cookie.expiry !== 0) {
                         expiryDate.setTime(expiryDate.getTime() + (cookie.expiry * 24 * 60 * 60 * 1000));
                         expiry = "; expires=" + expiryDate.toGMTString();
@@ -6249,8 +6237,7 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
                     if (thisCookie.indexOf(deriveQualifiedKey(key) + '=') === 0) {
                         var storedValues = decodeURIComponent(thisCookie.substring(prefix.length + key.length + 1, thisCookie.length))
                         try {
-                            var obj = JSON.parse(storedValues);
-                            return fromJson(obj)
+                            return JSON.parse(storedValues);
                         } catch (e) {
                             return storedValues
                         }

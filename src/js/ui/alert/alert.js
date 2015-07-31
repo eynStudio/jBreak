@@ -63,13 +63,14 @@ angular.module('jb.ui')
                         scope[key] = $sce.trustAsHtml(newValue);
                     });
                 });
-                attr.jbAlert && scope.$watch(attr.jbAlert, function (newValue, oldValue) {
-                    if (angular.isObject(newValue)) {
-                        angular.extend(scope, newValue);
-                    } else {
-                        scope.content = newValue;
-                    }
-                }, true);
+                if (attr.jbAlert)
+                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                    }, true);
 
                 var alert = $jbAlert(options);
 

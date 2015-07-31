@@ -24,6 +24,7 @@
     "angular-animate": "latest",
     "angular-sanitize": "latest",
     "angular-i18n": "latest",
+    "angular-local-storage": "latest",
     "bootstrap-additions": "latest",
     "angular-ui-utils": "latest",
     "angular": "latest",
