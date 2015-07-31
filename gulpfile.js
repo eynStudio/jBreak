@@ -42,12 +42,10 @@ gulp.task('html2js', function () {
 
 gulp.task('less', function () {
     gulp.src('src/less/jBreak.less')
-        //.pipe(sourcemaps.init())
         .pipe(less({compress: true}))
         .pipe(gulp.dest(buid_dir + 'css'))
         .pipe(gulp.dest('dist'))
         .pipe(minifyCSS())
-        //.pipe(sourcemaps.write())
         .pipe(rename('jBreak.min.css'))
         .pipe(gulp.dest('dist'))
         .pipe(gulp.dest(buid_dir + 'css'));
@@ -139,12 +137,9 @@ gulp.task('docs:html2js', function () {
 
 gulp.task('docs:less', function () {
     gulp.src('src/docs/docs.less')
-        //.pipe(sourcemaps.init())
         .pipe(less({compress: true}))
-        //.pipe(sourcemaps.write())
         .pipe(rename('docs.min.css'))
         .pipe(gulp.dest(buid_dir + 'css'));
 });
 
-// DEFAULT
 gulp.task('default', ['docs','vendor','html2js','end','less','img','watch']);

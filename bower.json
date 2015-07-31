@@ -18,19 +18,19 @@
   ],
   "devDependencies": {
     "kindeditor": "https://github.com/kindsoft/kindeditor.git",
+    "angular-local-storage": "latest",
+    "bootstrap-additions": "latest",
+    "angular-ui-utils": "latest"
+  },
+  "dependencies": {
+    "angular": "latest",
     "angular-resource": "latest",
     "angular-cookies": "latest",
     "angular-route": "latest",
     "angular-animate": "latest",
     "angular-sanitize": "latest",
     "angular-i18n": "latest",
-    "angular-local-storage": "latest",
-    "bootstrap-additions": "latest",
-    "angular-ui-utils": "latest",
-    "angular": "latest",
-    "bootstrap": "latest",
-    "angular-ui-router": "latest"
-  },
-  "dependencies": {
+    "angular-ui-router": "latest",
+    "bootstrap": "latest"
   }
 }
