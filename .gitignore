@@ -6,5 +6,5 @@ vendor/
 
 /.idea
 /docs
-/npm-debug.log
-/server/npm-debug.log
+npm-debug.log
+/server/public
