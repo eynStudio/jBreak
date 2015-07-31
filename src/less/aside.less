@@ -1,0 +1,43 @@
+.aside-dialog {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: white;
+  margin: 0 auto;
+  width: auto;
+  min-width: 320px;
+  right: 0;
+  left: auto;
+  overflow: auto;
+
+  &.left {
+    right: auto;
+    left: 0;
+  }
+  .aside-content {
+    }
+  .aside-header {
+    padding: 6px 15px;
+    background: @brand-primary;
+    color: white;
+    .close {
+      margin-right: -8px;
+      padding: 4px 8px;
+      color: white;
+      font-size: 25px;
+      opacity: .8;
+    }
+    .aside-title {
+    }
+  }
+  .aside-body {
+    position: relative;
+    padding: 20px;
+  }
+  .aside-footer {
+    margin-top: 15px;
+    padding: 19px 20px 20px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+  }
+}

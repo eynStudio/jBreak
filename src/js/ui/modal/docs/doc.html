@@ -1,0 +1,39 @@
+<div class="row" ng-controller="ModalCtrl">
+    <div class="page-header">
+        <h1>Modal</h1>
+    </div>
+    <div class="col-sm-6">
+
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale"
+                jb-modal="modal">Show Modal
+            <br />
+            <small>(default center)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale"
+                jb-modal="modal" data-size="sm">Show Modal
+            <br />
+            <small>(small)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale" data-placement="top"
+                jb-modal="modal" data-size="lg">Show Modal
+            <br />
+            <small>(large)</small>
+        </button>
+ <hr/>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale" data-placement="center"
+             backdrop="static"   jb-modal="modal">Show Modal
+            <br />
+            <small>(static)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale" data-placement="center"
+                data-template="jb/ui/modal/docs/custom.tpl.html"  jb-modal="modal"  backdrop="static" >Show Modal
+            <br />
+            <small>(content template)</small>
+        </button>
+        <button type="button" class="btn btn-lg btn-primary" data-animation="am-fade-and-scale" data-placement="center"
+                ng-click="showModal()">Show Modal
+            <br />
+            <small>(using service)</small>
+        </button>
+    </div>
+</div>

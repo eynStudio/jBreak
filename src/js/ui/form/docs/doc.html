@@ -1,0 +1,35 @@
+<div class="row" ng-controller="FormCtrl">
+    <div class="page-header">
+        <h1>FormCtrl</h1>
+    </div>
+    <div class="col-sm-6">
+        <form>
+            <div jb-form-group jb-lb="Xm" jb-ip="m1.Xm"></div>
+        </form>
+
+    </div>
+    <div class="col-sm-6">
+
+    </div>
+    <div class="col-sm-12">
+        <form class="form-horizontal">
+            <div jb-form-group-h jb-lb="'Xm'" jb-width="[2,10]" >
+                <input type="text" class="form-control" ng-model="m1.Xm">
+            </div>
+
+            <div jb-form-group-h jb-lb="['Xm','Xb']" jb-width="[2,4,2,4]" jb-count="true">
+                <input type="text" class="form-control" ng-model="m1.Xm" name="input1" jb-transclude-self="true">
+                <input type="text" class="form-control" ng-model="m1.Xb" name="input2" jb-transclude-self="true">
+            </div>
+
+            <div jb-select-zd="pp" ng-model="abc"></div>
+
+        </form>
+    </div>
+
+    <div class="col-sm-12">
+        <pre>{{m1}}</pre>
+        <!--<p>{{'hp'|jbzd:'pp'}}</p>-->
+        <p jb-zd="pp" jb-zd-dm="'hp'"></p>
+    </div>
+</div>

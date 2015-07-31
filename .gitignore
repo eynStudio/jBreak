@@ -1,0 +1,10 @@
+*.sw*
+*~
+build/
+node_modules/
+vendor/
+
+/.idea
+/docs
+/npm-debug.log
+/server/npm-debug.log

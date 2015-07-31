@@ -1,0 +1,12 @@
+﻿<div ng-style="{'width':col.width+'px'}">
+    <span ng-click="onTitle()">
+        {{col.title}}
+    </span>
+    <span class="jb-th-right">
+        <span ng-if="col.sort!==undefined" class="glyphicon"
+              ng-class="{'glyphicon-triangle-bottom':$index%2==1,'glyphicon-triangle-top':$index%2==0}"></span>
+        <span ng-if="col.filter!==undefined" class="glyphicon glyphicon-filter"></span>
+        <span class="glyphicon glyphicon-menu-down" jb-pop="pop" data-auto-close="false"
+              data-placement="right-bottom" data-template="jb/ui/table/th-opt.tpl.html"></span>
+    </span>
+</div>

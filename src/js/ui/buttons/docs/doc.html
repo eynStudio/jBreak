@@ -1,0 +1,35 @@
+<div class="row" ng-controller="ButtonsCtrl">
+    <div class="page-header">
+        <h1>Buttons</h1>
+    </div>
+    <div class="col-sm-6">
+        <pre class="bs-example-scope">$scope.button = {{button | json}};</pre>
+        <label>Toggle:</label>
+        <button type="button" class="btn btn-default" ng-model="button.toggle" jb-checkbox>Toggle</button>
+        <!-- You can also use custom values with the `data-true-value` & `data-false-value` attributes -->
+
+        <hr><label>Checkboxes:</label>
+        <div class="btn-group" ng-model="button.checkbox" jb-checkbox-group>
+            <label class="btn btn-default"><input type="checkbox" value="left"> Left</label>
+            <label class="btn btn-default"><input type="checkbox" value="middle"> Middle</label>
+            <label class="btn btn-default"><input type="checkbox" value="right"> Right</label>
+            <!-- Children get compiled by `bs-checkbox-group` to :
+            <label class="btn btn-default"><input type="checkbox" value="left" ng-model="button.checkbox.left" bs-checkbox> Left</label>
+            ...
+            -->
+        </div>
+
+        <hr><label>Radios:</label>
+        <div class="btn-group" ng-model="button.radio" jb-radio-group>
+            <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> First</label>
+            <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Second</label>
+            <label class="btn btn-default"><input type="radio" class="btn btn-default" value="2"> Third</label>
+            <!-- Children get compiled by `bs-radio-group` to :
+            <label class="btn btn-default"><input type="radio" class="btn btn-default" value="left" ng-model="button.radio" bs-radio> Left</label>
+            ...
+            -->
+        </div>
+
+
+    </div>
+</div>

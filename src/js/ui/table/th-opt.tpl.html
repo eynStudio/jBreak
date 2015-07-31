@@ -1,0 +1,27 @@
+<ul tabindex="-1" class="dropdown-menu jb-th-opt" role="menu">
+    <li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet"></span> 升序(最低到最高)</a></li>
+    <li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span> 降序(最高到最低)</a></li>
+    <li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort"></span> 不排序</a></li>
+    <li class="divider"></li>
+    <li ng-if="col.filter!==undefined">
+        <div class="jb-th-opt-filter">
+            <select class="form-control input-sm" ng-model="col.filter.Rules[0].Opt"
+                    ng-options="k as v for (k,v) in filterOpt"></select>
+            <input type="text" class="form-control input-sm" ng-model="col.filter.Rules[0].Val1">
+            <div class="form-group-sm">
+                <label class="radio-inline" ng-repeat="(k,v) in filterCondition">
+                    <input type="radio" value="{{k}}" ng-model="col.filter.Condition"> {{v}}
+                </label>
+            </div>
+            <select class="form-control input-sm" ng-model="col.filter.Rules[1].Opt"
+                    ng-disabled="col.filter.Condition=='NONE'"
+                    ng-options="k as v for (k,v) in filterOpt"></select>
+            <input type="text" class="form-control input-sm" ng-model="col.filter.Rules[1].Val1"
+                   ng-disabled="col.filter.Condition=='NONE'">
+            <div class="btn-group btn-group-sm pull-right">
+                <button class="btn btn-primary" ng-click="onFilter()">过滤</button>
+                <button class="btn btn-default">清除</button>
+            </div>
+        </div>
+    </li>
+</ul>

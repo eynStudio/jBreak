@@ -1,0 +1,24 @@
+<div class="row" ng-controller="DropdownCtrl2">
+    <div class="col-sm-12">
+        <div class="page-header">
+            <h1>dropdown-toggle</h1>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="input-group col-xs-4 input-group-sm">
+            <input type="text" class="form-control" ng-model="val">
+            <jb-input-group-dropdown-btn jb-src="src" jb-val="val"></jb-input-group-dropdown-btn>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-default " jb-dropdown-toggle>
+                Click me for a dropdown, yo!<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="choice in ['aaaa','bbbb','cccc']">
+                    <a>{{choice}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

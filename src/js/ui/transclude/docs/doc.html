@@ -1,0 +1,23 @@
+<div class="row" ng-controller="TranscludeCtrl">
+    <div class="page-header">
+        <h1>jbTransclude</h1>
+    </div>
+    <div class="col-sm-6">
+        <script type="text/ng-template" id="one.tpl.html">
+            <div jb-transclude>
+                <h1>Some template</h1>
+                <div jb-partial="block1"></div>
+                <div jb-partial="block2"></div>
+            </div>
+        </script>
+
+        <div jb-transclude-pane-demo>
+            <div name="block1">
+                <h1>Hello</h1>
+            </div>
+            <h2 name="block2" jb-transclude-self="true">World</h2>
+        </div>
+
+
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="row" ng-controller="SelectCtrl">
+    <div class="page-header">
+        <h1>SelectCtrl</h1>
+    </div>
+    <div class="col-sm-6">
+         <pre class="bs-example-scope">$scope.selectedIcon = "{{selectedIcon}}";
+$scope.selectedIcons = "{{selectedIcons}}";
+$scope.icons = "{{icons}}";
+</pre>
+
+        <label>Single select:&nbsp;</label>
+        <button type="button" class="btn btn-default" ng-model="selectedIcon" data-html="1" jb-options="icon.value as icon.label for icon in icons" jb-select>
+            Action <span class="caret"></span>
+        </button>
+        <hr>
+        <label>Multiple select:&nbsp;</label>
+        <button type="button" class="btn btn-default" ng-model="selectedIcons" data-html="1" data-multiple="1" data-animation="am-flip-x" jb-options="icon.value as icon.label for icon in icons" jb-select>
+            Action <span class="caret"></span>
+        </button>
+
+        <button type="button" class="btn btn-default" ng-model="selectedIcons" data-html="1" data-multiple="1" data-animation="am-flip-x" jb-options="icon.value as icon.label for icon in icons" jb-select>
+            Action <span class="caret"></span>
+        </button>
+
+    </div>
+    <div class="col-sm-6">
+
+    </div>
+
+</div>

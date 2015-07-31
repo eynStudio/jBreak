@@ -1,0 +1,26 @@
+<div class="row" ng-controller="AlertCtrl">
+    <div class="page-header">
+        <h1>Alert</h1>
+    </div>
+    <div class="col-sm-6">
+
+        <!-- Button to trigger a default alert with a scope as an object {title:'', content:'', etc.} -->
+        <button class="btn btn-lg btn-primary" data-placement="top-right" data-container="body" data-duration="3"   jb-alert="alert">show alert
+            <br />
+            <small>(object)</small>
+        </button>
+
+        <!-- You can also use data-attrs to assign scope variables -->
+        <button class="btn btn-lg btn-primary" title="{{alert.title}}" data-content="{{alert.content}}" data-type="success" data-container="#alerts-container" jb-alert>show alert
+            <br />
+            <small>(data-attrs)</small>
+        </button>
+
+        <!-- You can use a custom html template with the `data-template` attr -->
+        <!--<button class="btn btn-lg btn-danger" data-template="alert/docs/alert.tpl.demo.html" data-placement="top" data-duration="3" data-animation="am-fade-and-slide-top" data-container="body" data-keyboard="true" jb-alert="alert">show alert-->
+            <!--<br />-->
+            <!--<small>(data-template)</small>-->
+        <!--</button>-->
+
+    </div>
+</div>

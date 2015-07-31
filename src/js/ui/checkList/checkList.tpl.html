@@ -1,0 +1,10 @@
+<label class="checkbox-inline" ng-repeat="s in jbSrc">
+    <input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}
+</label>
+<label class="checkbox-inline" ng-show="jbOther">
+    <input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他
+</label>
+<label class="checkbox-inline" ng-show="jbOther">
+    <input type="text" ng-model="otherVal" class="form-control input-sm">
+</label>
+

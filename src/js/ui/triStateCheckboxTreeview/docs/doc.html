@@ -1,0 +1,18 @@
+
+<div class="row" ng-controller="TreeviewCtrl">
+    <script type=text/ng-template id=treeview.html>
+        <input type="checkbox" ng-model="item.IsChecked">
+        <label>{{item.Title}}</label>
+        <ul ng-if="item.Children.length>0">
+            <li ng-repeat="item in item.Children" ng-include="'treeview.html'"></li>
+        </ul>
+    </script>
+    <div class="page-header">
+        <h1>TreeView</h1>
+    </div>
+    <div class="col-sm-6">
+        <ul class="jb-tri-state-checkbox-treeview">
+            <li ng-repeat="item in src" ng-include="'treeview.html'"></li>
+        </ul>
+    </div>
+</div>

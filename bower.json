@@ -1,0 +1,37 @@
+{
+  "name": "jBreak",
+  "version": "0.0.3",
+  "main": [
+    "dist/jBreak.min.css",
+    "dist/jBreak.min.js"
+  ],
+  "ignore": [
+    ".*",
+    "node_modules",
+    "src/docs",
+    "src/js",
+    "src/vendor",
+    "build",
+    "docs",
+    "package.json",
+    "gulpfile.js",
+    "karma.conf.js"
+  ],
+  "devDependencies": {
+    "kindeditor": "https://github.com/kindsoft/kindeditor.git",
+    "angular-resource": "latest",
+    "angular-cookies": "latest",
+    "angular-route": "latest",
+    "angular-animate": "latest",
+    "angular-sanitize": "latest",
+    "angular-i18n": "latest",
+    "angular-mocks": "latest",
+    "bootstrap-additions": "latest",
+    "angular-ui-utils": "latest",
+    "angular": "latest",
+    "bootstrap": "latest",
+    "angular-ui-router": "0.2.15"
+  },
+  "dependencies": {
+  }
+}

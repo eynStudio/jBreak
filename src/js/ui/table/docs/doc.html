@@ -1,0 +1,62 @@
+<div class="row" ng-controller="TableCtrl2">
+    <div class="page-header">
+        <h1>jbTable2</h1>
+    </div>
+    <div class="col-sm-12">
+        <script type="text/ng-template" id="edit.html">
+            <th><input class="form-control" ng-model="$editItem.id"/></th>
+            <th><input class="form-control" ng-model="$editItem.name"/></th>
+            <th><input class="form-control" ng-model="$editItem.age" type="number"/></th>
+            <th>
+                <button ng-click="$save()" class="btn btn-default btn-xs" >保存</button>
+                <button ng-click="$edit()" class="btn btn-default btn-xs" > 取消</button>
+            </th>
+        </script>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">选择角色</h3>
+                <button ng-click="add2()" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+            </div>
+        </div>
+
+        <div jb-table2 jb-meta="meta" class=" panel-info" style="height: 240px"></div>
+    </div>
+</div>
+
+<div class="row" ng-controller="TableCtrl">
+    <div class="page-header">
+        <h1>jbTable</h1>
+    </div>
+    <div class="col-sm-6">
+        <script type="text/ng-template" id="edit.html">
+            <th><input class="form-control" ng-model="$editItem.id"/></th>
+            <th><input class="form-control" ng-model="$editItem.name"/></th>
+            <th><input class="form-control" ng-model="$editItem.age" type="number"/></th>
+            <th>
+                <button ng-click="$save()" class="btn btn-default btn-xs" >保存</button>
+                <button ng-click="$edit()" class="btn btn-default btn-xs" > 取消</button>
+            </th>
+        </script>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">选择角色</h3>
+                <button ng-click="add()" class="btn btn-default" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+            </div>
+            <table jb-table class="table table-bordered table-hover table-condensed">
+                <tr class="jb-table-add" ng-show="$editIdx===-1" ng-if="$editIdx===-1" ng-include="'edit.html'"></tr>
+                <tbody ng-repeat="item in items">
+                <tr >
+                    <td data-title="'Id'" >{{item.id}}</td>
+                    <td data-title="'名称'" >{{item.name}}</td>
+                    <td data-title="'Age'" class="text-right">{{item.age}}</td>
+                    <td data-title="'操作'"><button ng-click="$edit($index)" class="btn btn-default btn-xs" > edit</button></td>
+                </tr>
+                <tr ng-show="$editIdx===$index" ng-if="$editIdx===$index" ng-include="'edit.html'"></tr>
+            </table>
+        </div>
+    </div>
+</div>

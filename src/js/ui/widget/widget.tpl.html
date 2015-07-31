@@ -1,0 +1,15 @@
+﻿<div class="panel panel-default" jb-transclude>
+    <div class="panel-heading" jb-partial="heading">
+        <div jb-partial="actions" class="btn-group btn-group-xs pull-right">
+            <button class="btn btn-default" ng-click="$toggle()">X</button>
+        </div>
+        <div jb-partial="tools" class="pull-right" style="margin-right: 10px">
+        </div>
+        <h4 class="panel-title" jb-partial="title">{{title}}</h4>
+    </div>
+    <div class="panel-collapse collapse" ng-class="{'in':!isHide}" jb-partial="body">
+        <div class="panel-body" jb-partial="content"></div>
+    </div>
+    <div class="panel-footer" ng-if="showFoot">
+    </div>
+</div>
