@@ -14,8 +14,7 @@
     "build",
     "docs",
     "package.json",
-    "gulpfile.js",
-    "karma.conf.js"
+    "gulpfile.js"
   ],
   "devDependencies": {
     "kindeditor": "https://github.com/kindsoft/kindeditor.git",
@@ -25,7 +24,6 @@
     "angular-animate": "latest",
     "angular-sanitize": "latest",
     "angular-i18n": "latest",
-    "angular-mocks": "latest",
     "bootstrap-additions": "latest",
     "angular-ui-utils": "latest",
     "angular": "latest",
