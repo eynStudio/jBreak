@@ -104,11 +104,12 @@ gulp.task('watch', function() {
     gulp.watch('src/js/**/*.html', ['html2js', 'end', 'docs']);
     gulp.watch('src/less/**', ['less']);
     gulp.watch(['src/docs/**','src/**/docs/**'],['docs']);
-    gulp.watch([buid_dir]).on('change', livereload.changed);
+    gulp.watch([buid_dir + "**"]).on('change', livereload.changed);
 
 });
 gulp.task('docs',['docs:js','docs:html2js','docs:less'],function(){
-    return gulp.src(['src/docs/index-header.html','src/js/ui/**/docs/*.html','src/docs/index-footer.html'])
+    var files = ['src/docs/index-header.html', 'src/js/ui/**/docs/*.html', 'src/docs/index-footer.html'];
+    return gulp.src(files)
         .pipe(concat('index.html'))
         .pipe(gulp.dest(buid_dir));
 });
