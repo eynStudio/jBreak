@@ -11,6 +11,7 @@
     "src/docs",
     "src/js",
     "src/vendor",
+    "server",
     "build",
     "docs",
     "package.json",
