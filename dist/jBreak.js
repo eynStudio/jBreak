@@ -1242,171 +1242,6 @@ angular.module('jb.util.position', [])
     }]);
 angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position', 'jb.util.parseOptions']);
 
-angular.module('jb.ui')
-    .provider('$jbAlert', function () {
-        var defaults = this.defaults = {
-            animation: 'am-fade',
-            prefixClass: 'alert',
-            prefixEvent: 'alert',
-            placement: null,
-            template: 'jb/ui/alert/alert.tpl.html',
-            container: false,
-            element: null,
-            backdrop: false,
-            keyboard: true,
-            show: true,
-            // Specific options
-            duration: false,
-            type: false,
-            dismissable: true
-        };
-
-        this.$get = ["$timeout", "$jbModal", function ($timeout, $jbModal) {
-            function AlertFactory(config) {
-                var $alert = {};
-                var options = angular.extend({}, defaults, config);
-                $alert = $jbModal(options);
-
-                // Support scope as string options [/*title, content, */ type, dismissable]
-                $alert.$scope.dismissable = !!options.dismissable;
-                if (options.type) {
-                    $alert.$scope.type = options.type;
-                }
-
-                // Support auto-close duration
-                var show = $alert.show;
-                if (options.duration) {
-                    $alert.show = function () {
-                        show();
-                        $timeout(function () {
-                            $alert.hide();
-                        }, options.duration * 1000);
-                    };
-                }
-                return $alert;
-            }
-
-            return AlertFactory;
-        }];
-    })
-
-    .directive('jbAlert', ["$window", "$sce", "$jbAlert", function ($window, $sce, $jbAlert) {
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                angular.forEach(['title', 'content', 'type'], function (key) {
-                    if (attr[key]) attr.$observe(key, function (newValue, oldValue) {
-                        scope[key] = $sce.trustAsHtml(newValue);
-                    });
-                });
-                if (attr.jbAlert)
-                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
-                        } else {
-                            scope.content = newValue;
-                        }
-                    }, true);
-
-                var alert = $jbAlert(options);
-
-                element.on(attr.trigger || 'click', alert.toggle);
-                scope.$on('$destroy', function () {
-                    if (alert) alert.destroy();
-                    options = null;
-                    alert = null;
-                });
-            }
-        };
-
-    }]);
-angular.module('jb.ui')
-    .provider('$jbAside', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade-and-slide-right',
-            type: 'aside',
-            placement: null,
-            template: 'jb/ui/aside/aside.tpl.html',
-            contentTemplate: false,
-            container: false,
-            element: null,
-            backdrop: true,
-            keyboard: true,
-            html: true,
-            show: true
-        };
-
-        this.$get = ["$jbModal", function ($jbModal) {
-            function AsideFactory(config) {
-                var $aside = {};
-                var options = angular.extend({}, defaults, config);
-                $aside = $jbModal(options);
-                return $aside;
-            }
-
-            return AsideFactory;
-        }];
-    })
-
-    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                        });
-                    }
-                });
-
-                // Support scope as an object
-                if (attr.jbAside) {
-                    scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
-                        } else {
-                            scope.content = newValue;
-                        }
-                    }, true);
-                }
-                // Initialize aside
-                var aside = $jbAside(options);
-
-                // Trigger
-                element.on(attr.trigger || 'click', aside.toggle);
-
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (aside) aside.destroy();
-                    options = null;
-                    aside = null;
-                });
-
-            }
-        };
-
-    }]);
 (function () {
     var module = angular.module('jb.ui');
 
@@ -1573,68 +1408,6 @@ angular.module('jb.ui')
     }]);
 
 })();
-angular.module('jb.ui')
-    .directive('jbCheckList', function () {
-        return {
-            restrict: 'ECA',
-            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
-            templateUrl: "jb/ui/checkList/checkList.tpl.html",
-            link: function (scope, element, attrs) {
-
-                if (!angular.isArray(scope.jbSrc)) {
-                    throw "jbSrc must be array!";
-                }
-
-                setup(scope.jbVal);
-
-                function setup(val) {
-                    var other = [];
-                    scope.selection = [];
-                    val.split(';').forEach(function (item) {
-                        if (scope.jbSrc.indexOf(item) > -1) {
-                            scope.selection.push(item);
-                        } else if (scope.jbOther && item) {
-                            other.push(item);
-                        }
-                    });
-                    scope.otherCk = (other.length > 0);
-                    scope.otherVal = other.join(';');
-                }
-
-                function updateJbVal() {
-                    var val = scope.selection;
-                    if (scope.jbOther && scope.otherVal) {
-                        val.push(scope.otherVal);
-                    }
-                    scope.jbVal = val.join(';');
-                }
-
-                scope.toggleOther = function toggleOther() {
-                    scope.otherCk = !scope.otherCk;
-                    if (!scope.otherCk) {
-                        scope.otherVal = '';
-                    }
-                    updateJbVal();
-                };
-                scope.toggleSelection = function toggleSelection(item) {
-                    var idx = scope.selection.indexOf(item);
-                    if (idx > -1) {
-                        scope.selection.splice(idx, 1);
-                    }
-                    else {
-                        scope.selection.push(item);
-                    }
-                    updateJbVal();
-                };
-                scope.$watch('otherVal', function (newval) {
-                    scope.otherCk = !!newval;
-                    updateJbVal();
-                });
-                scope.$watch('jbVal', setup);
-            }
-        };
-    });
-
 angular.module('jb.ui')
 
     .provider('$jbDate', function () {
@@ -2806,6 +2579,233 @@ angular.module('jb.ui')
 
     }]);
 angular.module('jb.ui')
+    .provider('$jbAside', function () {
+
+        var defaults = this.defaults = {
+            animation: 'am-fade-and-slide-right',
+            type: 'aside',
+            placement: null,
+            template: 'jb/ui/aside/aside.tpl.html',
+            contentTemplate: false,
+            container: false,
+            element: null,
+            backdrop: true,
+            keyboard: true,
+            html: true,
+            show: true
+        };
+
+        this.$get = ["$jbModal", function ($jbModal) {
+            function AsideFactory(config) {
+                var $aside = {};
+                var options = angular.extend({}, defaults, config);
+                $aside = $jbModal(options);
+                return $aside;
+            }
+
+            return AsideFactory;
+        }];
+    })
+
+    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                        });
+                    }
+                });
+
+                // Support scope as an object
+                if (attr.jbAside) {
+                    scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                    }, true);
+                }
+                // Initialize aside
+                var aside = $jbAside(options);
+
+                // Trigger
+                element.on(attr.trigger || 'click', aside.toggle);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (aside) aside.destroy();
+                    options = null;
+                    aside = null;
+                });
+
+            }
+        };
+
+    }]);
+angular.module('jb.ui')
+    .provider('$jbAlert', function () {
+        var defaults = this.defaults = {
+            animation: 'am-fade',
+            prefixClass: 'alert',
+            prefixEvent: 'alert',
+            placement: null,
+            template: 'jb/ui/alert/alert.tpl.html',
+            container: false,
+            element: null,
+            backdrop: false,
+            keyboard: true,
+            show: true,
+            // Specific options
+            duration: false,
+            type: false,
+            dismissable: true
+        };
+
+        this.$get = ["$timeout", "$jbModal", function ($timeout, $jbModal) {
+            function AlertFactory(config) {
+                var $alert = {};
+                var options = angular.extend({}, defaults, config);
+                $alert = $jbModal(options);
+
+                // Support scope as string options [/*title, content, */ type, dismissable]
+                $alert.$scope.dismissable = !!options.dismissable;
+                if (options.type) {
+                    $alert.$scope.type = options.type;
+                }
+
+                // Support auto-close duration
+                var show = $alert.show;
+                if (options.duration) {
+                    $alert.show = function () {
+                        show();
+                        $timeout(function () {
+                            $alert.hide();
+                        }, options.duration * 1000);
+                    };
+                }
+                return $alert;
+            }
+
+            return AlertFactory;
+        }];
+    })
+
+    .directive('jbAlert', ["$window", "$sce", "$jbAlert", function ($window, $sce, $jbAlert) {
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                angular.forEach(['title', 'content', 'type'], function (key) {
+                    if (attr[key]) attr.$observe(key, function (newValue, oldValue) {
+                        scope[key] = $sce.trustAsHtml(newValue);
+                    });
+                });
+                if (attr.jbAlert)
+                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                    }, true);
+
+                var alert = $jbAlert(options);
+
+                element.on(attr.trigger || 'click', alert.toggle);
+                scope.$on('$destroy', function () {
+                    if (alert) alert.destroy();
+                    options = null;
+                    alert = null;
+                });
+            }
+        };
+
+    }]);
+angular.module('jb.ui')
+    .directive('jbCheckList', function () {
+        return {
+            restrict: 'ECA',
+            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
+            templateUrl: "jb/ui/checkList/checkList.tpl.html",
+            link: function (scope, element, attrs) {
+
+                if (!angular.isArray(scope.jbSrc)) {
+                    throw "jbSrc must be array!";
+                }
+
+                setup(scope.jbVal);
+
+                function setup(val) {
+                    var other = [];
+                    scope.selection = [];
+                    val.split(';').forEach(function (item) {
+                        if (scope.jbSrc.indexOf(item) > -1) {
+                            scope.selection.push(item);
+                        } else if (scope.jbOther && item) {
+                            other.push(item);
+                        }
+                    });
+                    scope.otherCk = (other.length > 0);
+                    scope.otherVal = other.join(';');
+                }
+
+                function updateJbVal() {
+                    var val = scope.selection;
+                    if (scope.jbOther && scope.otherVal) {
+                        val.push(scope.otherVal);
+                    }
+                    scope.jbVal = val.join(';');
+                }
+
+                scope.toggleOther = function toggleOther() {
+                    scope.otherCk = !scope.otherCk;
+                    if (!scope.otherCk) {
+                        scope.otherVal = '';
+                    }
+                    updateJbVal();
+                };
+                scope.toggleSelection = function toggleSelection(item) {
+                    var idx = scope.selection.indexOf(item);
+                    if (idx > -1) {
+                        scope.selection.splice(idx, 1);
+                    }
+                    else {
+                        scope.selection.push(item);
+                    }
+                    updateJbVal();
+                };
+                scope.$watch('otherVal', function (newval) {
+                    scope.otherCk = !!newval;
+                    updateJbVal();
+                });
+                scope.$watch('jbVal', setup);
+            }
+        };
+    });
+
+angular.module('jb.ui')
     .directive('draggable', function () {
         return {
             scope: {
@@ -3367,56 +3367,117 @@ angular.module('jb.ui')
 
 
 angular.module('jb.ui')
-    .directive('jbRadioList', ["$parse", function ($parse) {
+    .provider('$jbPop', function () {
+
+        var defaults = this.defaults = {
+            animation: 'am-fade',
+            customClass: '',
+            container: false,
+            target: false,
+            placement: 'right',
+            template: 'jb/ui/popover/popover.tpl.html',
+            contentTemplate: false,
+            trigger: 'click',
+            keyboard: true,
+            html: true,
+            title: '',
+            content: '',
+            delay: 0,
+            autoClose: false
+        };
+
+        this.$get = ["$jbTip", function ($jbTip) {
+
+            function PopoverFactory(element, config) {
+
+                // Common vars
+                var options = angular.extend({}, defaults, config);
+
+                var $popover = $jbTip(element, options);
+
+                // Support scope as string options [/*title, */content]
+                if (options.content) {
+                    $popover.$scope.content = options.content;
+                }
+
+                return $popover;
+
+            }
+
+            return PopoverFactory;
+
+        }];
+
+    })
+
+    .directive('jbPop', ["$window", "$sce", "$jbPop", function ($window, $sce, $jbPop) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
         return {
-            restrict: 'ECA',
-            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
-            templateUrl: "jb/ui/radioList/radioList.tpl.html",
-            link: function (scope, element, attrs) {
-                if (!angular.isArray(scope.jbSrc)) {
-                    throw "jbSrc must be array!";
-                }
-                scope.selection = '';
-                scope.otherVal = '';
-                setup(scope.jbVal);
-                function setup(val) {
-                    if (val) {
-                        if (scope.jbSrc.indexOf(val) > -1) {
-                            scope.selection = val;
-                        } else if (scope.jbOther) {
-                            scope.selection = 'other';
-                            scope.otherVal = val;
-                        } else {
-                            scope.selection = '';
-                            scope.otherVal = '';
-                        }
-                    }
-                }
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr) {
 
-                function updateJbVal() {
-                    scope.jbVal = scope.selection === 'other' ? scope.otherVal : scope.selection;
-                }
-
-                scope.select = function select(val) {
-                    scope.selection = val;
-                    if (val !== 'other') {
-                        scope.otherVal = '';
-                    }
-                    updateJbVal();
-                };
-
-                scope.$watch('otherVal', function (newval) {
-                    if (newval) {
-                        scope.selection = 'other';
-                    }
-                    updateJbVal();
+                // Directive options
+                var options = {scope: scope};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'container', 'target', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'customClass', 'autoClose', 'id'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
                 });
 
-                scope.$watch('jbVal', setup);
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                            if (angular.isDefined(oldValue)) {
+                                requestAnimationFrame(function () {
+                                    if (popover) popover.$applyPlacement();
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Support scope as an object
+                if (attr.jbPop) {
+                    scope.$watch(attr.jbPop, function (newValue, oldValue) {
+
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                        if (angular.isDefined(oldValue)) {
+                            requestAnimationFrame(function () {
+                                if (popover) popover.$applyPlacement();
+                            });
+                        }
+                    }, true);
+                }
+                // Visibility binding support
+                if (attr.bsShow) {
+                    scope.$watch(attr.bsShow, function (newValue, oldValue) {
+                        if (!popover || !angular.isDefined(newValue)) return;
+                        if (angular.isString(newValue)) newValue = !!newValue.match(/true|,?(popover),?/i);
+                        if (newValue === true) popover.show();
+                        else popover.hide();
+                    });
+                }
+                // Initialize popover
+                var popover = $jbPop(element, options);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (popover) popover.destroy();
+                    options = null;
+                    popover = null;
+                });
+
             }
         };
-    }]);
 
+    }]);
 angular.module('jb.ui')
     .controller('PaginationController', ['$scope', '$attrs', '$parse', '$interpolate', function ($scope, $attrs, $parse, $interpolate) {
         var self = this,
@@ -3659,117 +3720,56 @@ angular.module('jb.ui')
     }]);
 
 angular.module('jb.ui')
-    .provider('$jbPop', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade',
-            customClass: '',
-            container: false,
-            target: false,
-            placement: 'right',
-            template: 'jb/ui/popover/popover.tpl.html',
-            contentTemplate: false,
-            trigger: 'click',
-            keyboard: true,
-            html: true,
-            title: '',
-            content: '',
-            delay: 0,
-            autoClose: false
-        };
-
-        this.$get = ["$jbTip", function ($jbTip) {
-
-            function PopoverFactory(element, config) {
-
-                // Common vars
-                var options = angular.extend({}, defaults, config);
-
-                var $popover = $jbTip(element, options);
-
-                // Support scope as string options [/*title, */content]
-                if (options.content) {
-                    $popover.$scope.content = options.content;
-                }
-
-                return $popover;
-
-            }
-
-            return PopoverFactory;
-
-        }];
-
-    })
-
-    .directive('jbPop', ["$window", "$sce", "$jbPop", function ($window, $sce, $jbPop) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
+    .directive('jbRadioList', ["$parse", function ($parse) {
         return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr) {
-
-                // Directive options
-                var options = {scope: scope};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'container', 'target', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'customClass', 'autoClose', 'id'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                            if (angular.isDefined(oldValue)) {
-                                requestAnimationFrame(function () {
-                                    if (popover) popover.$applyPlacement();
-                                });
-                            }
-                        });
-                    }
-                });
-
-                // Support scope as an object
-                if (attr.jbPop) {
-                    scope.$watch(attr.jbPop, function (newValue, oldValue) {
-
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
+            restrict: 'ECA',
+            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
+            templateUrl: "jb/ui/radioList/radioList.tpl.html",
+            link: function (scope, element, attrs) {
+                if (!angular.isArray(scope.jbSrc)) {
+                    throw "jbSrc must be array!";
+                }
+                scope.selection = '';
+                scope.otherVal = '';
+                setup(scope.jbVal);
+                function setup(val) {
+                    if (val) {
+                        if (scope.jbSrc.indexOf(val) > -1) {
+                            scope.selection = val;
+                        } else if (scope.jbOther) {
+                            scope.selection = 'other';
+                            scope.otherVal = val;
                         } else {
-                            scope.content = newValue;
+                            scope.selection = '';
+                            scope.otherVal = '';
                         }
-                        if (angular.isDefined(oldValue)) {
-                            requestAnimationFrame(function () {
-                                if (popover) popover.$applyPlacement();
-                            });
-                        }
-                    }, true);
+                    }
                 }
-                // Visibility binding support
-                if (attr.bsShow) {
-                    scope.$watch(attr.bsShow, function (newValue, oldValue) {
-                        if (!popover || !angular.isDefined(newValue)) return;
-                        if (angular.isString(newValue)) newValue = !!newValue.match(/true|,?(popover),?/i);
-                        if (newValue === true) popover.show();
-                        else popover.hide();
-                    });
-                }
-                // Initialize popover
-                var popover = $jbPop(element, options);
 
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (popover) popover.destroy();
-                    options = null;
-                    popover = null;
+                function updateJbVal() {
+                    scope.jbVal = scope.selection === 'other' ? scope.otherVal : scope.selection;
+                }
+
+                scope.select = function select(val) {
+                    scope.selection = val;
+                    if (val !== 'other') {
+                        scope.otherVal = '';
+                    }
+                    updateJbVal();
+                };
+
+                scope.$watch('otherVal', function (newval) {
+                    if (newval) {
+                        scope.selection = 'other';
+                    }
+                    updateJbVal();
                 });
 
+                scope.$watch('jbVal', setup);
             }
         };
-
     }]);
+
 (function () {
     var module = angular.module('jb.ui');
 
@@ -4102,6 +4102,10 @@ angular.module('jb.ui')
 
     }]);
 })();
+(function (ng) {
+    "use strict";
+    ng.module('jb.ui.table', ['jb.filter']);
+})(angular);
 //ref https://github.com/angular-ui/bootstrap/blob/bootstrap3/src/tabs/tabs.js
 
 angular.module('jb.ui')
@@ -4410,10 +4414,6 @@ angular.module('jb.ui')
         };
     });
 
-(function (ng) {
-    "use strict";
-    ng.module('jb.ui.table', ['jb.filter']);
-})(angular);
 angular.module('jb.ui')
     .provider('$jbTip', function () {
         var defaults = this.defaults = {
@@ -5166,54 +5166,6 @@ angular.module('jb.ui')
     });
 
 })();
-angular.module('jb.ui')
-    .directive('jbTriStateCheckboxTreeview', function () {
-        return {
-            restrict: 'ECA',
-            link: function (scope, element, attrs) {
-                element.on('change', function (e) {
-                    var checked = $(e.target).prop("checked"),
-                        container = $(e.target).parent(),
-                        siblings = container.siblings();
-
-                    container.find('input[type="checkbox"]').prop({
-                        indeterminate: false,
-                        checked: checked
-                    });
-
-                    function checkSiblings(el) {
-                        var parent = el.parent().parent(),
-                            all = true;
-
-                        el.siblings().each(function () {
-                            all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
-                            return all;
-                        });
-
-                        if (all && checked) {
-                            parent.children('input[type="checkbox"]').prop({
-                                indeterminate: false,
-                                checked: checked
-                            });
-                            checkSiblings(parent);
-                        } else if (all && !checked) {
-                            parent.children('input[type="checkbox"]').prop("checked", checked);
-                            parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
-                            checkSiblings(parent);
-                        } else {
-                            el.parents("li").children('input[type="checkbox"]').prop({
-                                indeterminate: true,
-                                checked: false
-                            });
-                        }
-                    }
-
-                    checkSiblings(container);
-                });
-            }
-        };
-    });
-
 (function () {
     var module = angular.module('jb.ui.widget', []);
 
@@ -5282,6 +5234,54 @@ angular.module('jb.ui')
     });
 
 })();
+angular.module('jb.ui')
+    .directive('jbTriStateCheckboxTreeview', function () {
+        return {
+            restrict: 'ECA',
+            link: function (scope, element, attrs) {
+                element.on('change', function (e) {
+                    var checked = $(e.target).prop("checked"),
+                        container = $(e.target).parent(),
+                        siblings = container.siblings();
+
+                    container.find('input[type="checkbox"]').prop({
+                        indeterminate: false,
+                        checked: checked
+                    });
+
+                    function checkSiblings(el) {
+                        var parent = el.parent().parent(),
+                            all = true;
+
+                        el.siblings().each(function () {
+                            all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+                            return all;
+                        });
+
+                        if (all && checked) {
+                            parent.children('input[type="checkbox"]').prop({
+                                indeterminate: false,
+                                checked: checked
+                            });
+                            checkSiblings(parent);
+                        } else if (all && !checked) {
+                            parent.children('input[type="checkbox"]').prop("checked", checked);
+                            parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
+                            checkSiblings(parent);
+                        } else {
+                            el.parents("li").children('input[type="checkbox"]').prop({
+                                indeterminate: true,
+                                checked: false
+                            });
+                        }
+                    }
+
+                    checkSiblings(container);
+                });
+            }
+        };
+    });
+
 (function (ng) {
     "use strict";
 
@@ -5572,8 +5572,20 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/alert/alert.tpl.html',
-            '<div class="alert" ng-class="[type ? \'alert-\' + type : null,$placement]"><button type="button" class="close" ng-if="dismissable" ng-click="$hide()">&times;</button> <strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span></div>');
+        $templateCache.put('jb/ui/datetime/datepicker.tpl.html',
+            '<div class="dropdown-menu datepicker" ng-class="\'datepicker-mode-\' + $mode" style="max-width: 320px;"><table style="table-layout: fixed; height: 100%; width: 100%;"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)"><i class="{{$iconLeft}}"></i></button></th><th colspan="{{ rows[0].length - 2 }}"><button tabindex="-1" type="button" class="btn btn-default btn-block text-strong" ng-click="$toggleMode()"><strong style="text-transform: capitalize;" ng-bind="title"></strong></button></th><th><button tabindex="-1" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)"><i class="{{$iconRight}}"></i></button></th></tr><tr ng-show="showLabels" ng-bind-html="labels"></tr></thead><tbody><tr ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%"><td class="text-center" ng-repeat="(j, el) in row"><button tabindex="-1" type="button" class="btn btn-default" style="width: 100%" ng-class="{\'btn-primary\': el.selected, \'btn-info btn-today\': el.isToday && !el.selected}" ng-click="$select(el.date)" ng-disabled="el.disabled"><span ng-class="{\'text-muted\': el.muted}" ng-bind="el.label"></span></button></td></tr></tbody></table></div>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/datetime/timepicker.tpl.html',
+            '<div class="dropdown-menu timepicker" style="min-width: 0px;width: auto;"><table height="100%"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 0)"><i class="{{ $iconUp }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 1)"><i class="{{ $iconUp }}"></i></button></th></tr></thead><tbody><tr ng-repeat="(i, row) in rows"><td class="text-center"><button tabindex="-1" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[0].selected}" ng-click="$select(row[0].date, 0)" ng-disabled="row[0].disabled"><span ng-class="{\'text-muted\': row[0].muted}" ng-bind="row[0].label"></span></button></td><td><span ng-bind="i == midIndex ? timeSeparator : \' \'"></span></td><td class="text-center"><button tabindex="-1" ng-if="row[1].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[1].selected}" ng-click="$select(row[1].date, 1)" ng-disabled="row[1].disabled"><span ng-class="{\'text-muted\': row[1].muted}" ng-bind="row[1].label"></span></button></td><td ng-if="showAM">&nbsp;</td><td ng-if="showAM"><button tabindex="-1" ng-show="i == midIndex - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !!isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">AM</button> <button tabindex="-1" ng-show="i == midIndex + 1 - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">PM</button></td></tr></tbody><tfoot><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 0)"><i class="{{ $iconDown }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 1)"><i class="{{ $iconDown }}"></i></button></th></tr></tfoot></table></div>');
     }]);
 })();
 
@@ -5596,32 +5608,20 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/alert/alert.tpl.html',
+            '<div class="alert" ng-class="[type ? \'alert-\' + type : null,$placement]"><button type="button" class="close" ng-if="dismissable" ng-click="$hide()">&times;</button> <strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span></div>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
         $templateCache.put('jb/ui/checkList/checkList.tpl.html',
             '<label class="checkbox-inline" ng-repeat="s in jbSrc"><input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}</label> <label class="checkbox-inline" ng-show="jbOther"><input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/datetime/datepicker.tpl.html',
-            '<div class="dropdown-menu datepicker" ng-class="\'datepicker-mode-\' + $mode" style="max-width: 320px;"><table style="table-layout: fixed; height: 100%; width: 100%;"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)"><i class="{{$iconLeft}}"></i></button></th><th colspan="{{ rows[0].length - 2 }}"><button tabindex="-1" type="button" class="btn btn-default btn-block text-strong" ng-click="$toggleMode()"><strong style="text-transform: capitalize;" ng-bind="title"></strong></button></th><th><button tabindex="-1" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)"><i class="{{$iconRight}}"></i></button></th></tr><tr ng-show="showLabels" ng-bind-html="labels"></tr></thead><tbody><tr ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%"><td class="text-center" ng-repeat="(j, el) in row"><button tabindex="-1" type="button" class="btn btn-default" style="width: 100%" ng-class="{\'btn-primary\': el.selected, \'btn-info btn-today\': el.isToday && !el.selected}" ng-click="$select(el.date)" ng-disabled="el.disabled"><span ng-class="{\'text-muted\': el.muted}" ng-bind="el.label"></span></button></td></tr></tbody></table></div>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/datetime/timepicker.tpl.html',
-            '<div class="dropdown-menu timepicker" style="min-width: 0px;width: auto;"><table height="100%"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 0)"><i class="{{ $iconUp }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 1)"><i class="{{ $iconUp }}"></i></button></th></tr></thead><tbody><tr ng-repeat="(i, row) in rows"><td class="text-center"><button tabindex="-1" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[0].selected}" ng-click="$select(row[0].date, 0)" ng-disabled="row[0].disabled"><span ng-class="{\'text-muted\': row[0].muted}" ng-bind="row[0].label"></span></button></td><td><span ng-bind="i == midIndex ? timeSeparator : \' \'"></span></td><td class="text-center"><button tabindex="-1" ng-if="row[1].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[1].selected}" ng-click="$select(row[1].date, 1)" ng-disabled="row[1].disabled"><span ng-class="{\'text-muted\': row[1].muted}" ng-bind="row[1].label"></span></button></td><td ng-if="showAM">&nbsp;</td><td ng-if="showAM"><button tabindex="-1" ng-show="i == midIndex - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !!isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">AM</button> <button tabindex="-1" ng-show="i == midIndex + 1 - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">PM</button></td></tr></tbody><tfoot><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 0)"><i class="{{ $iconDown }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 1)"><i class="{{ $iconDown }}"></i></button></th></tr></tfoot></table></div>');
     }]);
 })();
 
@@ -5704,8 +5704,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/radioList/radioList.tpl.html',
-            '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
+        $templateCache.put('jb/ui/popover/popover.tpl.html',
+            '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
     }]);
 })();
 
@@ -5740,8 +5740,8 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
         module = angular.module('jb.ui.tpls', []);
     }
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/popover/popover.tpl.html',
-            '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
+        $templateCache.put('jb/ui/radioList/radioList.tpl.html',
+            '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
     }]);
 })();
 
@@ -5754,42 +5754,6 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
     module.run(['$templateCache', function ($templateCache) {
         $templateCache.put('jb/ui/select/select.tpl.html',
             '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tab.tpl.html',
-            '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
-            '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
-    }]);
-})();
-
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset.tpl.html',
-            '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
     }]);
 })();
 
@@ -5838,6 +5802,42 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
     module.run(['$templateCache', function ($templateCache) {
         $templateCache.put('jb/ui/table/th.tpl.html',
             '<div ng-style="{\'width\':col.width+\'px\'}"><span ng-click="onTitle()">{{col.title}}</span> <span class="jb-th-right"><span ng-if="col.sort!==undefined" class="glyphicon" ng-class="{\'glyphicon-triangle-bottom\':$index%2==1,\'glyphicon-triangle-top\':$index%2==0}"></span> <span ng-if="col.filter!==undefined" class="glyphicon glyphicon-filter"></span> <span class="glyphicon glyphicon-menu-down" jb-pop="pop" data-auto-close="false" data-placement="right-bottom" data-template="jb/ui/table/th-opt.tpl.html"></span></span></div>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/tabs/tab.tpl.html',
+            '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
+            '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
+    }]);
+})();
+
+(function (module) {
+    try {
+        module = angular.module('jb.ui.tpls');
+    } catch (e) {
+        module = angular.module('jb.ui.tpls', []);
+    }
+    module.run(['$templateCache', function ($templateCache) {
+        $templateCache.put('jb/ui/tabs/tabset.tpl.html',
+            '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
     }]);
 })();
 
