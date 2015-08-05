@@ -6999,76 +6999,76 @@ button.close {
     position: relative
 }
 
-.layout .layout-e, .layout .layout-n, .layout .layout-s, .layout .layout-w {
+.layout .lay-n, .layout .lay-s, .layout .lay-w, .layout .layout-e {
     position: absolute
 }
 
-.layout .layout-n, .layout .layout-s {
+.layout .lay-n, .layout .lay-s {
     height: 40px;
     width: 100%
 }
 
-.layout .layout-e, .layout .layout-w {
+.layout .lay-e, .layout .lay-w {
     width: 240px;
     height: 100%
 }
 
-.layout .layout-n {
+.layout .lay-n {
     top: 0
 }
 
-.layout .layout-s {
+.layout .lay-s {
     bottom: 0
 }
 
-.layout .layout-e {
+.layout .lay-e {
     right: 0
 }
 
-.layout .layout-w {
+.layout .lay-w {
     left: 0
 }
 
-.layout .layout-c {
+.layout .lay-c {
     width: 100%;
     height: 100%
 }
 
-.layout .layout-scroll {
+.layout .lay-scroll {
     overflow: auto
 }
 
-.layout .layout-n-default {
+.layout .lay-n-default {
     border-bottom: 1px solid #e2e2e2
 }
 
-.layout-default {
+.lay-default {
     height: 100%;
     width: 100%;
     overflow: hidden
 }
 
-.layout-with-n {
+.lay-wi-n {
     padding-top: 40px
 }
 
-.layout-with-s {
+.lay-wi-s {
     padding-bottom: 40px
 }
 
-.layout-with-ns {
+.lay-wi-ns {
     padding: 40px 0
 }
 
-.layout-with-e {
+.lay-wi-e {
     padding-right: 240px
 }
 
-.layout-with-w {
+.lay-wi-w {
     padding-left: 240px
 }
 
-.layout-with-ew {
+.lay-wi-ew {
     padding: 0 240px
 }
 
