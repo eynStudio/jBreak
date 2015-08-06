@@ -1,124 +1,122 @@
 'use strict';
-angular.module("ngLocale", [], ["$provide", function ($provide) {
-    var PLURAL_CATEGORY = {ZERO: "zero", ONE: "one", TWO: "two", FEW: "few", MANY: "many", OTHER: "other"};
-    $provide.value("$locale", {
-        "DATETIME_FORMATS": {
-            "AMPMS": [
-                "\u4e0a\u5348",
-                "\u4e0b\u5348"
-            ],
-            "DAY": [
-                "\u661f\u671f\u65e5",
-                "\u661f\u671f\u4e00",
-                "\u661f\u671f\u4e8c",
-                "\u661f\u671f\u4e09",
-                "\u661f\u671f\u56db",
-                "\u661f\u671f\u4e94",
-                "\u661f\u671f\u516d"
-            ],
-            "ERANAMES": [
-                "\u516c\u5143\u524d",
-                "\u516c\u5143"
-            ],
-            "ERAS": [
-                "\u516c\u5143\u524d",
-                "\u516c\u5143"
-            ],
-            "FIRSTDAYOFWEEK": 6,
-            "MONTH": [
-                "\u4e00\u6708",
-                "\u4e8c\u6708",
-                "\u4e09\u6708",
-                "\u56db\u6708",
-                "\u4e94\u6708",
-                "\u516d\u6708",
-                "\u4e03\u6708",
-                "\u516b\u6708",
-                "\u4e5d\u6708",
-                "\u5341\u6708",
-                "\u5341\u4e00\u6708",
-                "\u5341\u4e8c\u6708"
-            ],
-            "SHORTDAY": [
-                "\u5468\u65e5",
-                "\u5468\u4e00",
-                "\u5468\u4e8c",
-                "\u5468\u4e09",
-                "\u5468\u56db",
-                "\u5468\u4e94",
-                "\u5468\u516d"
-            ],
-            "SHORTMONTH": [
-                "1\u6708",
-                "2\u6708",
-                "3\u6708",
-                "4\u6708",
-                "5\u6708",
-                "6\u6708",
-                "7\u6708",
-                "8\u6708",
-                "9\u6708",
-                "10\u6708",
-                "11\u6708",
-                "12\u6708"
-            ],
-            "WEEKENDRANGE": [
-                5,
-                6
-            ],
-            "fullDate": "y\u5e74M\u6708d\u65e5EEEE",
-            "longDate": "y\u5e74M\u6708d\u65e5",
-            "medium": "y\u5e74M\u6708d\u65e5 ah:mm:ss",
-            "mediumDate": "y\u5e74M\u6708d\u65e5",
-            "mediumTime": "ah:mm:ss",
-            "short": "yy/M/d ah:mm",
-            "shortDate": "yy/M/d",
-            "shortTime": "ah:mm"
-        },
-        "NUMBER_FORMATS": {
-            "CURRENCY_SYM": "\u00a5",
-            "DECIMAL_SEP": ".",
-            "GROUP_SEP": ",",
-            "PATTERNS": [
-                {
-                    "gSize": 3,
-                    "lgSize": 3,
-                    "maxFrac": 3,
-                    "minFrac": 0,
-                    "minInt": 1,
-                    "negPre": "-",
-                    "negSuf": "",
-                    "posPre": "",
-                    "posSuf": ""
-                },
-                {
-                    "gSize": 3,
-                    "lgSize": 3,
-                    "maxFrac": 2,
-                    "minFrac": 2,
-                    "minInt": 1,
-                    "negPre": "\u00a4\u00a0-",
-                    "negSuf": "",
-                    "posPre": "\u00a4\u00a0",
-                    "posSuf": ""
-                }
-            ]
-        },
-        "id": "zh-cn",
-        "pluralCat": function (n, opt_precision) {
-            return PLURAL_CATEGORY.OTHER;
-        }
-    });
+angular.module("ngLocale", [], ["$provide", function($provide) {
+var PLURAL_CATEGORY = {ZERO: "zero", ONE: "one", TWO: "two", FEW: "few", MANY: "many", OTHER: "other"};
+$provide.value("$locale", {
+  "DATETIME_FORMATS": {
+    "AMPMS": [
+      "\u4e0a\u5348",
+      "\u4e0b\u5348"
+    ],
+    "DAY": [
+      "\u661f\u671f\u65e5",
+      "\u661f\u671f\u4e00",
+      "\u661f\u671f\u4e8c",
+      "\u661f\u671f\u4e09",
+      "\u661f\u671f\u56db",
+      "\u661f\u671f\u4e94",
+      "\u661f\u671f\u516d"
+    ],
+    "ERANAMES": [
+      "\u516c\u5143\u524d",
+      "\u516c\u5143"
+    ],
+    "ERAS": [
+      "\u516c\u5143\u524d",
+      "\u516c\u5143"
+    ],
+    "FIRSTDAYOFWEEK": 6,
+    "MONTH": [
+      "\u4e00\u6708",
+      "\u4e8c\u6708",
+      "\u4e09\u6708",
+      "\u56db\u6708",
+      "\u4e94\u6708",
+      "\u516d\u6708",
+      "\u4e03\u6708",
+      "\u516b\u6708",
+      "\u4e5d\u6708",
+      "\u5341\u6708",
+      "\u5341\u4e00\u6708",
+      "\u5341\u4e8c\u6708"
+    ],
+    "SHORTDAY": [
+      "\u5468\u65e5",
+      "\u5468\u4e00",
+      "\u5468\u4e8c",
+      "\u5468\u4e09",
+      "\u5468\u56db",
+      "\u5468\u4e94",
+      "\u5468\u516d"
+    ],
+    "SHORTMONTH": [
+      "1\u6708",
+      "2\u6708",
+      "3\u6708",
+      "4\u6708",
+      "5\u6708",
+      "6\u6708",
+      "7\u6708",
+      "8\u6708",
+      "9\u6708",
+      "10\u6708",
+      "11\u6708",
+      "12\u6708"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
+    ],
+    "fullDate": "y\u5e74M\u6708d\u65e5EEEE",
+    "longDate": "y\u5e74M\u6708d\u65e5",
+    "medium": "y\u5e74M\u6708d\u65e5 ah:mm:ss",
+    "mediumDate": "y\u5e74M\u6708d\u65e5",
+    "mediumTime": "ah:mm:ss",
+    "short": "yy/M/d ah:mm",
+    "shortDate": "yy/M/d",
+    "shortTime": "ah:mm"
+  },
+  "NUMBER_FORMATS": {
+    "CURRENCY_SYM": "\u00a5",
+    "DECIMAL_SEP": ".",
+    "GROUP_SEP": ",",
+    "PATTERNS": [
+      {
+        "gSize": 3,
+        "lgSize": 3,
+        "maxFrac": 3,
+        "minFrac": 0,
+        "minInt": 1,
+        "negPre": "-",
+        "negSuf": "",
+        "posPre": "",
+        "posSuf": ""
+      },
+      {
+        "gSize": 3,
+        "lgSize": 3,
+        "maxFrac": 2,
+        "minFrac": 2,
+        "minInt": 1,
+        "negPre": "\u00a4\u00a0-",
+        "negSuf": "",
+        "posPre": "\u00a4\u00a0",
+        "posSuf": ""
+      }
+    ]
+  },
+  "id": "zh-cn",
+  "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
+});
 }]);
 
-(function () {
+(function() {
 
-    var module = angular.module('jb', []),
+    var module = angular.module('jb',[]),
         uid = 0;
 
     module.service('$jb', function () {
-        this.nextUid = nextUid;
-        this.fmt = fmt;
+        this.nextUid=nextUid;
+        this.fmt=fmt;
     });
 
 
@@ -192,10 +190,10 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             }
 
             return {
-                pushToBuffer: pushToBuffer,
-                loginConfirmed: function (id, name) {
-                    localStorageService.set('token', id);
-                    localStorageService.set('user', name);
+                pushToBuffer:pushToBuffer,
+                loginConfirmed: function (id,name) {
+                    localStorageService.set('token',id);
+                    localStorageService.set('user',name);
                     $rootScope.$broadcast('event:authConfirmed');
                     retryAll();
                     if (nextPath) {
@@ -209,7 +207,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             };
         }];
     })
-    .factory('jbAuthInterceptor', ["$rootScope", "$q", "$location", "jbAuth", "localStorageService", function ($rootScope, $q, $location, jbAuth, localStorageService) {
+    .factory('jbAuthInterceptor', ["$rootScope", "$q", "$location", "jbAuth", "localStorageService", function ($rootScope,$q,$location,jbAuth,localStorageService) {
         return {
             'request': function (config) {
                 config.headers = config.headers || {};
@@ -254,14 +252,14 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             var res = jbRes(url, params, methods);
             var ctx = {
                 res: res,
-                lst: [],
+                lst:[],
                 sys: jbSys,
                 asCur: asCur,
                 refresh: refresh,
                 edit: edit,
                 save: save,
                 pager: pager,
-                page: 1
+                page:1
             };
             return ctx;
 
@@ -270,7 +268,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             }
 
             function pager(page) {
-                ctx.page = page;
+                ctx.page=page;
                 refresh();
             }
 
@@ -290,7 +288,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             function asCur() {
                 jbSys.curCtx = ctx;
             }
-        }
+            }
 
         return get;
     }]);
@@ -305,21 +303,21 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 edit: edit,
                 save: save,
                 pager: pager,
-                total: 0,
+                total:0,
                 filter: {page: 1, perPage: 20}
             };
             return ctx;
 
             function refresh(filter) {
-                if (filter) ctx.filter = filter;
+                if(filter) ctx.filter=filter;
                 res.post({filter: ''}, ctx.filter, function (data) {
-                    ctx.lst = data.Items;
-                    ctx.total = data.Total;
+                    ctx.lst=data.Items;
+                    ctx.total=data.Total;
                 });
             }
 
             function pager(page) {
-                ctx.filter.page = page;
+                ctx.filter.page=page;
                 refresh();
             }
             function edit(idx) {
@@ -547,12 +545,12 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
         return makeGroup(condition, makeRule(field, opt), makeRule(field, opt));
     }
 
-    function makeRule(field, opt, val1, val2) {
+    function makeRule(field,opt,val1,val2){
         var re = {
             Field: field,
-            Opt: opt || 'contains',
-            Val1: val1 || '',
-            Val2: val2 || ''
+            Opt: opt||'contains',
+            Val1: val1||'',
+            Val2: val2||''
         };
         re.hello = function () {
             console.log('hi');
@@ -560,22 +558,22 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
         return re;
     }
 })(angular);
-(function (ng) {
+(function(ng){
 
-    var module = ng.module('jb.res', ['ngResource']);
+    var module=ng.module('jb.res', [ 'ngResource' ] );
 
     module.factory('jbRes', ["$resource", function ($resource) {
-        return function (url, params, methods) {
+        return  function( url, params, methods ) {
             var defaults = {
-                create: {method: 'post'},
-                save: {method: 'put'},
+                create: { method: 'post' },
+                save: { method: 'put' },
                 add: {method: 'put', isArray: true},
                 del: {method: 'delete', isArray: true},
-                update: {method: 'post', isArray: true},
+                update: { method: 'post', isArray: true },
                 post: {method: 'post'},
                 page: {method: 'get', params: {page: 1}}
             };
-            methods = angular.extend(defaults, methods);
+            methods = angular.extend( defaults, methods );
             return $resource(url, params, methods);
         };
     }]);
@@ -681,8 +679,6 @@ angular.module('jb.sys', [])
 
 
 })(angular);
-angular.module('jb.be', []);
-
 angular.module('jb.ui', ['ngLocale', 'jb.ui.tpls', 'jb.util', 'jb', 'jb.ui.table', 'jb.zd', 'jb.ui.widget']);
 
 angular.module('jb.util.dateParser', [])
@@ -1028,9 +1024,9 @@ angular.module('jb.util.dateParser', [])
         };
 
     }]);
-(function () {
-    var module = angular.module('jb.util.parseOptions', []);
-    module.provider('$jbParseOptions', function () {
+(function() {
+    var module = angular.module('jb.util.parseOptions',[]);
+    module.provider('$jbParseOptions', function() {
 
         var defaults = this.defaults = {
             regexp: /^\s*(.*?)(?:\s+as\s+(.*?))?(?:\s+group\s+by\s+(.*))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+(.*?)(?:\s+track\s+by\s+(.*?))?$/
@@ -1056,7 +1052,7 @@ angular.module('jb.util.dateParser', [])
                     keyName = match[5];
                     groupByFn = $parse(match[3] || '');
                     valueFn = $parse(match[2] ? match[1] : valueName);
-                    valuesFn = $parse(match[7]);
+                        valuesFn = $parse(match[7]);
                 };
 
                 $parseOptions.valuesFn = function (scope, controller) {
@@ -1240,7 +1236,9 @@ angular.module('jb.util.position', [])
             }
         };
     }]);
-angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position', 'jb.util.parseOptions']);
+angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position','jb.util.parseOptions']);
+
+angular.module('jb.be', []);
 
 angular.module('jb.ui')
     .provider('$jbAlert', function () {
@@ -1381,15 +1379,15 @@ angular.module('jb.ui')
                 });
 
                 // Support scope as an object
-                if (attr.jbAside) {
-                    scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
-                        } else {
-                            scope.content = newValue;
-                        }
-                    }, true);
-                }
+              if(  attr.jbAside ) {
+                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                      if (angular.isObject(newValue)) {
+                          angular.extend(scope, newValue);
+                      } else {
+                          scope.content = newValue;
+                      }
+                  }, true);
+              }
                 // Initialize aside
                 var aside = $jbAside(options);
 
@@ -1407,7 +1405,7 @@ angular.module('jb.ui')
         };
 
     }]);
-(function () {
+(function() {
     var module = angular.module('jb.ui');
 
     var btnDefaults = {
@@ -1435,7 +1433,7 @@ angular.module('jb.ui')
 
     });
 
-    module.directive('jbCheckbox', ["$$rAF", function ($$rAF) {
+    module.directive('jbCheckbox', ["$$rAF", function ( $$rAF) {
 
         var constantValueRegExp = /^(true|false|\d+)$/;
 
@@ -1525,7 +1523,7 @@ angular.module('jb.ui')
 
     });
 
-    module.directive('jbRadio', ["$$rAF", function ($$rAF) {
+    module.directive('jbRadio', ["$$rAF", function ( $$rAF) {
 
         var constantValueRegExp = /^(true|false|\d+)$/;
 
@@ -1597,8 +1595,8 @@ angular.module('jb.ui')
                             other.push(item);
                         }
                     });
-                    scope.otherCk = (other.length > 0);
-                    scope.otherVal = other.join(';');
+                    scope.otherCk = (other.length>0);
+                    scope.otherVal =other.join(';');
                 }
 
                 function updateJbVal() {
@@ -3044,46 +3042,6 @@ angular.module('jb.ui')
         };
 
     }]);
-(function () {
-    var module = angular.module('jb.ui');
-
-    module.directive('jbFormGroup', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            templateUrl: 'jb/ui/form/fg.tpl.html',
-            scope: {
-                lb: '@jbLb',
-                ip: '=jbIp'
-            }
-        };
-    });
-
-    module.directive('jbFormGroupH', ["$jb", function ($jb) {
-        return {
-            restrict: 'EA',
-            transclude: true,
-            replace: true,
-            templateUrl: function (element, attrs) {
-                return attrs.jbCount ? 'jb/ui/form/fgh2.tpl.html' : 'jb/ui/form/fgh.tpl.html';
-            },
-            scope: {
-                lb: '=jbLb',
-                w: '=jbWidth',
-                count: '=?jbCount'
-            },
-            link: function (scope, element, attrs) {
-                scope.w0 = 'col-sm-' + scope.w[0];
-                scope.w1 = 'col-sm-' + scope.w[1];
-                if (scope.count) {
-                    scope.w2 = 'col-sm-' + scope.w[2];
-                    scope.w3 = 'col-sm-' + scope.w[3];
-                }
-            }
-        };
-    }]);
-
-})();
 angular.module('jb.ui')
     .directive('jbDropdownToggle', ['$document', '$location', function ($document, $location) {
         var openElement = null,
@@ -3128,6 +3086,46 @@ angular.module('jb.ui')
         };
     }]);
 
+(function() {
+    var module = angular.module('jb.ui');
+
+    module.directive('jbFormGroup', function(){
+        return {
+            restrict: 'EA',
+            replace: true,
+            templateUrl: 'jb/ui/form/fg.tpl.html',
+            scope: {
+                lb: '@jbLb',
+                ip: '=jbIp'
+            }
+        };
+    });
+
+    module.directive('jbFormGroupH', ["$jb", function($jb){
+        return {
+            restrict: 'EA',
+            transclude: true,
+            replace: true,
+            templateUrl: function(element, attrs){
+                return attrs.jbCount?  'jb/ui/form/fgh2.tpl.html':  'jb/ui/form/fgh.tpl.html';
+            },
+            scope: {
+                lb: '=jbLb',
+                w:'=jbWidth',
+                count:'=?jbCount'
+            },
+            link: function (scope, element, attrs) {
+                scope.w0='col-sm-'+scope.w[0];
+                scope.w1='col-sm-'+scope.w[1];
+                if(scope.count){
+                    scope.w2='col-sm-'+scope.w[2];
+                    scope.w3='col-sm-'+scope.w[3];
+                }
+            }
+        };
+    }]);
+
+})();
 angular.module('jb.ui')
     .directive('jbInputGroupDropdownBtn', function () {
         return {
@@ -3195,7 +3193,7 @@ angular.module('jb.ui')
                 };
                 // Publish isShown as a protected var on scope
                 $modal.$isShown = scope.$isShown = false;
-                $modal.$size = scope.$size = options.size;
+                $modal.$size = scope.$size=options.size;
                 $modal.$placement = scope.$placement = options.placement;
 
 
@@ -3293,7 +3291,7 @@ angular.module('jb.ui')
 
                 function hideOnBackdropClick(evt) {
                     if (evt.target !== evt.currentTarget) return;
-                    if (options.backdrop === 'static') $modal.focus();
+                   if(  options.backdrop === 'static' ) $modal.focus() ;
                     else $modal.hide();
                 }
 
@@ -3313,7 +3311,7 @@ angular.module('jb.ui')
             }
 
             function safeDigest(scope) {
-                var tmp = scope.$$phase || (scope.$root && scope.$root.$$phase) || scope.$digest();
+               var tmp= scope.$$phase || (scope.$root && scope.$root.$$phase) || scope.$digest();
             }
 
             function preventEventDefault(evt) {
@@ -3412,7 +3410,7 @@ angular.module('jb.ui')
         $scope.selectPage = function (page) {
             if (!self.isActive(page) && page > 0 && page <= $scope.totalPages) {
                 $scope.page = page;
-                $scope.onSelectPage({page: page});
+                $scope.onSelectPage({ page: page });
             }
         };
 
@@ -3681,30 +3679,30 @@ angular.module('jb.ui')
                 });
 
                 // Support scope as an object
-                if (attr.jbPop) {
-                    scope.$watch(attr.jbPop, function (newValue, oldValue) {
+               if( attr.jbPop ) {
+                   scope.$watch(attr.jbPop, function (newValue, oldValue) {
 
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
-                        } else {
-                            scope.content = newValue;
-                        }
-                        if (angular.isDefined(oldValue)) {
-                            requestAnimationFrame(function () {
-                                if (popover) popover.$applyPlacement();
-                            });
-                        }
-                    }, true);
-                }
+                       if (angular.isObject(newValue)) {
+                           angular.extend(scope, newValue);
+                       } else {
+                           scope.content = newValue;
+                       }
+                       if (angular.isDefined(oldValue)) {
+                           requestAnimationFrame(function () {
+                               if (popover) popover.$applyPlacement();
+                           });
+                       }
+                   }, true);
+               }
                 // Visibility binding support
-                if (attr.bsShow) {
-                    scope.$watch(attr.bsShow, function (newValue, oldValue) {
-                        if (!popover || !angular.isDefined(newValue)) return;
-                        if (angular.isString(newValue)) newValue = !!newValue.match(/true|,?(popover),?/i);
-                        if (newValue === true) popover.show();
-                        else popover.hide();
-                    });
-                }
+               if( attr.bsShow) {
+                   scope.$watch(attr.bsShow, function (newValue, oldValue) {
+                       if (!popover || !angular.isDefined(newValue)) return;
+                       if (angular.isString(newValue)) newValue = !!newValue.match(/true|,?(popover),?/i);
+                       if( newValue === true ) popover.show() ;
+                       else popover.hide();
+                   });
+               }
                 // Initialize popover
                 var popover = $jbPop(element, options);
 
@@ -3747,7 +3745,7 @@ angular.module('jb.ui')
                 }
 
                 function updateJbVal() {
-                    scope.jbVal = scope.selection === 'other' ? scope.otherVal : scope.selection;
+                    scope.jbVal = scope.selection === 'other'? scope.otherVal: scope.selection;
                 }
 
                 scope.select = function select(val) {
@@ -3770,7 +3768,7 @@ angular.module('jb.ui')
         };
     }]);
 
-(function () {
+(function() {
     var module = angular.module('jb.ui');
 
     module.provider('$jbSelect', function () {
@@ -4106,314 +4104,6 @@ angular.module('jb.ui')
     "use strict";
     ng.module('jb.ui.table', ['jb.filter']);
 })(angular);
-//ref https://github.com/angular-ui/bootstrap/blob/bootstrap3/src/tabs/tabs.js
-
-angular.module('jb.ui')
-
-    .controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
-        var ctrl = this,
-            tabs = ctrl.tabs = $scope.tabs = [];
-
-        ctrl.select = function (tab) {
-            angular.forEach(tabs, function (tab) {
-                tab.active = false;
-            });
-            tab.active = true;
-        };
-
-        ctrl.addTab = function addTab(tab) {
-            tabs.push(tab);
-            if (tabs.length === 1 || tab.active) {
-                ctrl.select(tab);
-            }
-        };
-
-        ctrl.removeTab = function removeTab(tab) {
-            var index = tabs.indexOf(tab);
-            //Select a new tab if the tab to be removed is selected
-            if (tab.active && tabs.length > 1) {
-                //If this is the last tab, select the previous tab. else, the next tab.
-                var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
-                ctrl.select(tabs[newActiveIndex]);
-            }
-            tabs.splice(index, 1);
-        };
-    }])
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tabset
- * @restrict EA
- *
- * @description
- * Tabset is the outer container for the tabs directive
- *
- * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
- * @param {boolean=} justified Whether or not to use justified styling for the tabs.
- * @param {string=} direction  What direction the tabs should be rendered. Available:
- * 'right', 'left', 'below'.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <tabset>
- <tab heading="Tab 1"><b>First</b> Content!</tab>
- <tab heading="Tab 2"><i>Second</i> Content!</tab>
- </tabset>
- <hr />
- <tabset vertical="true">
- <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
- <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
- </tabset>
- <tabset justified="true">
- <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
- <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
- </tabset>
- </file>
- </example>
- */
-    .directive('tabset', function () {
-        return {
-            restrict: 'EA',
-            transclude: true,
-            replace: true,
-            require: '^tabset',
-            scope: {},
-            controller: 'TabsetController',
-            templateUrl: 'jb/ui/tabs/tabset.tpl.html',
-            compile: function (elm, attrs, transclude) {
-                return function (scope, element, attrs, tabsetCtrl) {
-                    scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
-                    scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
-                    scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-                    scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
-                    scope.tabsAbove = (scope.direction != 'below');
-                    tabsetCtrl.$scope = scope;
-                    tabsetCtrl.$transcludeFn = transclude;
-                };
-            }
-        };
-    })
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tab
- * @restrict EA
- *
- * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
- * @param {string=} select An expression to evaluate when the tab is selected.
- * @param {boolean=} active A binding, telling whether or not this tab is selected.
- * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
- *
- * @description
- * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <div ng-controller="TabsDemoCtrl">
- <button class="btn btn-small" ng-click="items[0].active = true">
- Select item 1, using active binding
- </button>
- <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
- Enable/disable item 2, using disabled binding
- </button>
- <br />
- <tabset>
- <tab heading="Tab 1">First Tab</tab>
- <tab select="alertMe()">
- <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
- Second Tab, with alert callback and html heading!
- </tab>
- <tab ng-repeat="item in items"
- heading="{{item.title}}"
- disabled="item.disabled"
- active="item.active">
- {{item.content}}
- </tab>
- </tabset>
- </div>
- </file>
- <file name="script.js">
- function TabsDemoCtrl($scope) {
-      $scope.items = [
-        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
-        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
-      ];
-
-      $scope.alertMe = function() {
-        setTimeout(function() {
-          alert("You've selected the alert tab!");
-        });
-      };
-    };
- </file>
- </example>
- */
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tabHeading
- * @restrict EA
- *
- * @description
- * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <tabset>
- <tab>
- <tab-heading><b>HTML</b> in my titles?!</tab-heading>
- And some content, too!
- </tab>
- <tab>
- <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
- That's right.
- </tab>
- </tabset>
- </file>
- </example>
- */
-    .directive('tab', ['$parse', function ($parse) {
-        return {
-            require: '^tabset',
-            restrict: 'EA',
-            replace: true,
-            templateUrl: 'jb/ui/tabs/tab.tpl.html',
-            transclude: true,
-            scope: {
-                heading: '@',
-                onSelect: '&select', //This callback is called in contentHeadingTransclude
-                //once it inserts the tab's content into the dom
-                onDeselect: '&deselect'
-            },
-            controller: function () {
-                //Empty controller so other directives can require being 'under' a tab
-            },
-            compile: function (elm, attrs, transclude) {
-                return function postLink(scope, elm, attrs, tabsetCtrl) {
-                    var getActive, setActive;
-                    if (attrs.active) {
-                        getActive = $parse(attrs.active);
-                        setActive = getActive.assign;
-                        scope.$parent.$watch(getActive, function updateActive(value, oldVal) {
-                            // Avoid re-initializing scope.active as it is already initialized
-                            // below. (watcher is called async during init with value ===
-                            // oldVal)
-                            if (value !== oldVal) {
-                                scope.active = !!value;
-                            }
-                        });
-                        scope.active = getActive(scope.$parent);
-                    } else {
-                        setActive = getActive = angular.noop;
-                    }
-
-                    scope.$watch('active', function (active) {
-                        // Note this watcher also initializes and assigns scope.active to the
-                        // attrs.active expression.
-                        setActive(scope.$parent, active);
-                        if (active) {
-                            tabsetCtrl.select(scope);
-                            scope.onSelect();
-                        } else {
-                            scope.onDeselect();
-                        }
-                    });
-
-                    scope.disabled = false;
-                    if (attrs.disabled) {
-                        scope.$parent.$watch($parse(attrs.disabled), function (value) {
-                            scope.disabled = !!value;
-                        });
-                    }
-
-                    scope.select = function () {
-                        if (!scope.disabled) {
-                            scope.active = true;
-                        }
-                    };
-
-                    tabsetCtrl.addTab(scope);
-                    scope.$on('$destroy', function () {
-                        tabsetCtrl.removeTab(scope);
-                    });
-
-
-                    //We need to transclude later, once the content container is ready.
-                    //when this link happens, we're inside a tab heading.
-                    scope.$transcludeFn = transclude;
-                };
-            }
-        };
-    }])
-
-    .directive('tabHeadingTransclude', [function () {
-        return {
-            restrict: 'A',
-            require: '^tab',
-            link: function (scope, elm, attrs, tabCtrl) {
-                scope.$watch('headingElement', function updateHeadingElement(heading) {
-                    if (heading) {
-                        elm.html('');
-                        elm.append(heading);
-                    }
-                });
-            }
-        };
-    }])
-
-    .directive('tabContentTransclude', function () {
-        return {
-            restrict: 'A',
-            require: '^tabset',
-            link: function (scope, elm, attrs) {
-                var tab = scope.$eval(attrs.tabContentTransclude);
-
-                //Now our tab is ready to be transcluded: both the tab heading area
-                //and the tab content area are loaded.  Transclude 'em both.
-                tab.$transcludeFn(tab.$parent, function (contents) {
-                    angular.forEach(contents, function (node) {
-                        if (isTabHeading(node)) {
-                            //Let tabHeadingTransclude know.
-                            tab.headingElement = node;
-                        } else {
-                            elm.append(node);
-                        }
-                    });
-                });
-            }
-        };
-        function isTabHeading(node) {
-            return node.tagName && (
-                    node.hasAttribute('tab-heading') ||
-                    node.hasAttribute('data-tab-heading') ||
-                    node.tagName.toLowerCase() === 'tab-heading' ||
-                    node.tagName.toLowerCase() === 'data-tab-heading'
-                );
-        }
-    })
-
-    .directive('tabsetTitles', function () {
-        return {
-            restrict: 'A',
-            require: '^tabset',
-            templateUrl: 'jb/ui/tabs/tabset-titles.tpl.html',
-            replace: true,
-            link: function (scope, elm, attrs, tabsetCtrl) {
-                if (!scope.$eval(attrs.tabsetTitles)) {
-                    elm.remove();
-                } else {
-                    //now that tabs location has been decided, transclude the tab titles in
-                    tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function (node) {
-                        elm.append(node);
-                    });
-                }
-            }
-        };
-    });
-
 angular.module('jb.ui')
     .provider('$jbTip', function () {
         var defaults = this.defaults = {
@@ -4721,7 +4411,7 @@ angular.module('jb.ui')
                 }
 
                 $tooltip.toggle = function () {
-                    if ($tooltip.$isShown) $tooltip.leave();
+                    if( $tooltip.$isShown) $tooltip.leave() ;
                     else $tooltip.enter();
                 };
 
@@ -4809,7 +4499,7 @@ angular.module('jb.ui')
                     evt.preventDefault();
                     evt.stopPropagation();
                     // Some browsers do not auto-focus buttons (eg. Safari)
-                    if ($tooltip.$isShown) element[0].blur();
+                  if(  $tooltip.$isShown ) element[0].blur() ;
                     else element[0].focus();
                 };
 
@@ -5117,26 +4807,334 @@ angular.module('jb.ui')
     }]);
 
 
-(function () {
+//ref https://github.com/angular-ui/bootstrap/blob/bootstrap3/src/tabs/tabs.js
+
+angular.module('jb.ui')
+
+    .controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
+        var ctrl = this,
+            tabs = ctrl.tabs = $scope.tabs = [];
+
+        ctrl.select = function (tab) {
+            angular.forEach(tabs, function (tab) {
+                tab.active = false;
+            });
+            tab.active = true;
+        };
+
+        ctrl.addTab = function addTab(tab) {
+            tabs.push(tab);
+            if (tabs.length === 1 || tab.active) {
+                ctrl.select(tab);
+            }
+        };
+
+        ctrl.removeTab = function removeTab(tab) {
+            var index = tabs.indexOf(tab);
+            //Select a new tab if the tab to be removed is selected
+            if (tab.active && tabs.length > 1) {
+                //If this is the last tab, select the previous tab. else, the next tab.
+                var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
+                ctrl.select(tabs[newActiveIndex]);
+            }
+            tabs.splice(index, 1);
+        };
+    }])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabset
+ * @restrict EA
+ *
+ * @description
+ * Tabset is the outer container for the tabs directive
+ *
+ * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
+ * @param {boolean=} justified Whether or not to use justified styling for the tabs.
+ * @param {string=} direction  What direction the tabs should be rendered. Available:
+ * 'right', 'left', 'below'.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <tabset>
+ <tab heading="Tab 1"><b>First</b> Content!</tab>
+ <tab heading="Tab 2"><i>Second</i> Content!</tab>
+ </tabset>
+ <hr />
+ <tabset vertical="true">
+ <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
+ <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
+ </tabset>
+ <tabset justified="true">
+ <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
+ <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
+ </tabset>
+ </file>
+ </example>
+ */
+    .directive('tabset', function () {
+        return {
+            restrict: 'EA',
+            transclude: true,
+            replace: true,
+            require: '^tabset',
+            scope: {},
+            controller: 'TabsetController',
+            templateUrl: 'jb/ui/tabs/tabset.tpl.html',
+            compile: function (elm, attrs, transclude) {
+                return function (scope, element, attrs, tabsetCtrl) {
+                    scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
+                    scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
+                    scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
+                    scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+                    scope.tabsAbove = (scope.direction != 'below');
+                    tabsetCtrl.$scope = scope;
+                    tabsetCtrl.$transcludeFn = transclude;
+                };
+            }
+        };
+    })
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tab
+ * @restrict EA
+ *
+ * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
+ * @param {string=} select An expression to evaluate when the tab is selected.
+ * @param {boolean=} active A binding, telling whether or not this tab is selected.
+ * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
+ *
+ * @description
+ * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <div ng-controller="TabsDemoCtrl">
+ <button class="btn btn-small" ng-click="items[0].active = true">
+ Select item 1, using active binding
+ </button>
+ <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
+ Enable/disable item 2, using disabled binding
+ </button>
+ <br />
+ <tabset>
+ <tab heading="Tab 1">First Tab</tab>
+ <tab select="alertMe()">
+ <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
+ Second Tab, with alert callback and html heading!
+ </tab>
+ <tab ng-repeat="item in items"
+ heading="{{item.title}}"
+ disabled="item.disabled"
+ active="item.active">
+ {{item.content}}
+ </tab>
+ </tabset>
+ </div>
+ </file>
+ <file name="script.js">
+ function TabsDemoCtrl($scope) {
+      $scope.items = [
+        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
+        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
+      ];
+
+      $scope.alertMe = function() {
+        setTimeout(function() {
+          alert("You've selected the alert tab!");
+        });
+      };
+    };
+ </file>
+ </example>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabHeading
+ * @restrict EA
+ *
+ * @description
+ * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <tabset>
+ <tab>
+ <tab-heading><b>HTML</b> in my titles?!</tab-heading>
+ And some content, too!
+ </tab>
+ <tab>
+ <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
+ That's right.
+ </tab>
+ </tabset>
+ </file>
+ </example>
+ */
+    .directive('tab', ['$parse', function ($parse) {
+        return {
+            require: '^tabset',
+            restrict: 'EA',
+            replace: true,
+            templateUrl: 'jb/ui/tabs/tab.tpl.html',
+            transclude: true,
+            scope: {
+                heading: '@',
+                onSelect: '&select', //This callback is called in contentHeadingTransclude
+                //once it inserts the tab's content into the dom
+                onDeselect: '&deselect'
+            },
+            controller: function () {
+                //Empty controller so other directives can require being 'under' a tab
+            },
+            compile: function (elm, attrs, transclude) {
+                return function postLink(scope, elm, attrs, tabsetCtrl) {
+                    var getActive, setActive;
+                    if (attrs.active) {
+                        getActive = $parse(attrs.active);
+                        setActive = getActive.assign;
+                        scope.$parent.$watch(getActive, function updateActive(value, oldVal) {
+                            // Avoid re-initializing scope.active as it is already initialized
+                            // below. (watcher is called async during init with value ===
+                            // oldVal)
+                            if (value !== oldVal) {
+                                scope.active = !!value;
+                            }
+                        });
+                        scope.active = getActive(scope.$parent);
+                    } else {
+                        setActive = getActive = angular.noop;
+                    }
+
+                    scope.$watch('active', function (active) {
+                        // Note this watcher also initializes and assigns scope.active to the
+                        // attrs.active expression.
+                        setActive(scope.$parent, active);
+                        if (active) {
+                            tabsetCtrl.select(scope);
+                            scope.onSelect();
+                        } else {
+                            scope.onDeselect();
+                        }
+                    });
+
+                    scope.disabled = false;
+                    if (attrs.disabled) {
+                        scope.$parent.$watch($parse(attrs.disabled), function (value) {
+                            scope.disabled = !!value;
+                        });
+                    }
+
+                    scope.select = function () {
+                        if (!scope.disabled) {
+                            scope.active = true;
+                        }
+                    };
+
+                    tabsetCtrl.addTab(scope);
+                    scope.$on('$destroy', function () {
+                        tabsetCtrl.removeTab(scope);
+                    });
+
+
+                    //We need to transclude later, once the content container is ready.
+                    //when this link happens, we're inside a tab heading.
+                    scope.$transcludeFn = transclude;
+                };
+            }
+        };
+    }])
+
+    .directive('tabHeadingTransclude', [function () {
+        return {
+            restrict: 'A',
+            require: '^tab',
+            link: function (scope, elm, attrs, tabCtrl) {
+                scope.$watch('headingElement', function updateHeadingElement(heading) {
+                    if (heading) {
+                        elm.html('');
+                        elm.append(heading);
+                    }
+                });
+            }
+        };
+    }])
+
+    .directive('tabContentTransclude', function () {
+        return {
+            restrict: 'A',
+            require: '^tabset',
+            link: function (scope, elm, attrs) {
+                var tab = scope.$eval(attrs.tabContentTransclude);
+
+                //Now our tab is ready to be transcluded: both the tab heading area
+                //and the tab content area are loaded.  Transclude 'em both.
+                tab.$transcludeFn(tab.$parent, function (contents) {
+                    angular.forEach(contents, function (node) {
+                        if (isTabHeading(node)) {
+                            //Let tabHeadingTransclude know.
+                            tab.headingElement = node;
+                        } else {
+                            elm.append(node);
+                        }
+                    });
+                });
+            }
+        };
+        function isTabHeading(node) {
+            return node.tagName && (
+                node.hasAttribute('tab-heading') ||
+                    node.hasAttribute('data-tab-heading') ||
+                    node.tagName.toLowerCase() === 'tab-heading' ||
+                    node.tagName.toLowerCase() === 'data-tab-heading'
+                );
+        }
+    })
+
+    .directive('tabsetTitles', function () {
+        return {
+            restrict: 'A',
+            require: '^tabset',
+            templateUrl: 'jb/ui/tabs/tabset-titles.tpl.html',
+            replace: true,
+            link: function (scope, elm, attrs, tabsetCtrl) {
+                if (!scope.$eval(attrs.tabsetTitles)) {
+                    elm.remove();
+                } else {
+                    //now that tabs location has been decided, transclude the tab titles in
+                    tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function (node) {
+                        elm.append(node);
+                    });
+                }
+            }
+        };
+    });
+
+(function() {
     var module = angular.module('jb.ui');
 
-    var Ctrl = ['$scope', '$element', '$transclude', function ($scope, $element, $transclude) {
+    var Ctrl = ['$scope', '$element', '$transclude', function($scope, $element, $transclude){
 
         var toTransclude;
 
-        $scope.$on('$destroy', function () {
-            if (toTransclude) {
+        $scope.$on('$destroy', function(){
+            if(toTransclude){
                 toTransclude.remove();
                 toTransclude = null;
             }
         });
 
-        this.transclude = function (name, element) {
-            for (var i = 0; i < toTransclude.length; ++i) {
+        this.transclude = function(name, element){
+            for(var i = 0; i < toTransclude.length; ++i){
                 var el = angular.element(toTransclude[i]);
-                if (el.attr('name') === name) {
+                if(el.attr('name') === name){
                     element.empty();
-                    if (el.attr('jb-transclude-self'))
+                    if(el.attr('jb-transclude-self'))
                         element.append(el);
                     else
                         element.append(el.children());
@@ -5145,20 +5143,20 @@ angular.module('jb.ui')
             }
         };
 
-        $transclude(function (clone) {
+        $transclude(function(clone){
             toTransclude = clone;
         });
     }];
-    module.directive('jbTransclude', function () {
+    module.directive('jbTransclude', function(){
         return {
             controller: Ctrl
         };
     });
 
-    module.directive('jbPartial', function () {
+    module.directive('jbPartial', function(){
         return {
             require: ['^jbTransclude'],
-            link: function (scope, element, attrs, ctrls) {
+            link: function(scope, element, attrs, ctrls){
                 var ctrl = ctrls[0];
                 ctrl.transclude(attrs.jbPartial, element);
             }
@@ -5186,7 +5184,7 @@ angular.module('jb.ui')
                             all = true;
 
                         el.siblings().each(function () {
-                            all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+                             all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
                             return all;
                         });
 
@@ -5214,14 +5212,14 @@ angular.module('jb.ui')
         };
     });
 
-(function () {
+(function() {
     var module = angular.module('jb.ui.widget', []);
 
     var ctrl = ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
         var self = this;
-        var lst = [];
+        var lst=[];
         $element.addClass('panel-group');
-        this.add = function (wg) {
+        this.add=function(wg){
             lst.push(wg);
             wg.$on('$destroy', function (event) {
                 self.del(wg);
@@ -5239,19 +5237,19 @@ angular.module('jb.ui')
             if (!multiple) {
                 angular.forEach(lst, function (wg) {
                     if (wg !== openWg) {
-                        wg.isHide = true;
+                        wg.isHide=true;
                     }
                 });
             }
         };
     }];
-    module.directive('jbWidgets', function () {
+    module.directive('jbWidgets', function(){
         return {
             controller: ctrl
         };
     });
 
-    module.directive('jbWidget', function () {
+    module.directive('jbWidget', function(){
         return {
             restrict: 'EA',
             require: '^?jbWidgets',
@@ -5261,12 +5259,12 @@ angular.module('jb.ui')
             scope: {
                 title: '@',
                 isHide: '=?',
-                showFoot: '=',
+                showFoot:'=',
                 ctx: '=?jbCtx'
             },
             link: function (scope, element, attrs, ctrls) {
-                var ctrl = ctrls;
-                if (ctrl) {
+                var ctrl=ctrls;
+                if(ctrl) {
                     ctrl.add(scope);
                     scope.$watch('isHide', function (value) {
                         if (!value) {
@@ -5293,9 +5291,9 @@ angular.module('jb.ui')
     tableCtr.$inject = ["$scope"];
 
     module.directive('jbTable', ['$compile', '$q', '$parse',
-        function ($compile, $q, $parse) {
+        function($compile,$q,$parse) {
             return {
-                scope: {},
+                scope:{},
                 restrict: "A",
                 controller: tableCtr,
                 compile: function (tElement, tAttrs, transclude) {
@@ -5349,13 +5347,13 @@ angular.module('jb.ui')
     "use strict";
 
     var module = ng.module('jb.ui.table');
-    var strFilterOpt = {
-        empty: '空',
-        not_empty: '非空',
+    var strFilterOpt={
+        empty:'空',
+        not_empty:'非空',
         contains: '包含',
-        start: '开始为',
-        end: '结束为',
-        equal: '等于'
+        start:'开始为',
+        end:'结束为',
+        equal:'等于'
     };
     var strFilterCondition = {
         NONE: '无',
@@ -5363,12 +5361,12 @@ angular.module('jb.ui')
         OR: '或'
     };
 
-    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window, $jb) {
+    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window,$jb) {
         var win = angular.element($window);
         var ctrl = this;
         var orderBy = $filter('orderBy');
         var filter = $filter('filter');
-        var fmt = $jb.fmt;
+        var fmt=$jb.fmt;
         var $src = $scope.$src = copyRefs($scope.src);
         var cols = [];
         var filtered;
@@ -5448,7 +5446,7 @@ angular.module('jb.ui')
         this.bodyTr = function () {
             var tr = '<tr ng-repeat="$row in $src">';
             ng.forEach($scope.meta.cols, function (c) {
-                tr += buildTd(c);
+                tr+=buildTd(c);
             });
             tr += '</tr>';
             return tr;
@@ -5488,13 +5486,13 @@ angular.module('jb.ui')
     }
     tableCtr.$inject = ["$scope", "$element", "$attrs", "$filter", "$parse", "$timeout", "$window", "$jb"];
 
-    module.directive('jbTable2', ["$compile", "$q", "$parse", function ($compile, $q, $parse) {
+    module.directive('jbTable2',["$compile", "$q", "$parse", function($compile,$q,$parse) {
             return {
                 replace: true,
 
                 templateUrl: 'jb/ui/table/table.tpl.html',
-                scope: {
-                    meta: '=jbMeta'
+                scope:{
+                    meta:'=jbMeta'
                 },
                 controller: tableCtr,
                 link: function (scope, element, attrs, ctrl) {
@@ -5565,304 +5563,304 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
             .setNotify(true, true);
     }]);
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/alert/alert.tpl.html',
-            '<div class="alert" ng-class="[type ? \'alert-\' + type : null,$placement]"><button type="button" class="close" ng-if="dismissable" ng-click="$hide()">&times;</button> <strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/alert/alert.tpl.html',
+    '<div class="alert" ng-class="[type ? \'alert-\' + type : null,$placement]"><button type="button" class="close" ng-if="dismissable" ng-click="$hide()">&times;</button> <strong ng-bind="title"></strong>&nbsp;<span ng-bind-html="content"></span></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/aside/aside.tpl.html',
-            '<div class="modal" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="aside-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'left\':$placement==\'left\'}"><div class="aside-content"><div class="aside-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="aside-title" ng-bind="title"></h4></div><div class="aside-body" ng-bind="content"></div><div class="aside-footer"><button type="button" class="btn btn-default" ng-click="$hide()">Close</button></div></div></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/aside/aside.tpl.html',
+    '<div class="modal" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="aside-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'left\':$placement==\'left\'}"><div class="aside-content"><div class="aside-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="aside-title" ng-bind="title"></h4></div><div class="aside-body" ng-bind="content"></div><div class="aside-footer"><button type="button" class="btn btn-default" ng-click="$hide()">Close</button></div></div></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/checkList/checkList.tpl.html',
-            '<label class="checkbox-inline" ng-repeat="s in jbSrc"><input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}</label> <label class="checkbox-inline" ng-show="jbOther"><input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/checkList/checkList.tpl.html',
+    '<label class="checkbox-inline" ng-repeat="s in jbSrc"><input type="checkbox" value="{{s}}" ng-checked="selection.indexOf(s) > -1" ng-click="toggleSelection(s)"> {{s}}</label> <label class="checkbox-inline" ng-show="jbOther"><input type="checkbox" ng-model="otherCk" ng-click="toggleOther()"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/datetime/datepicker.tpl.html',
-            '<div class="dropdown-menu datepicker" ng-class="\'datepicker-mode-\' + $mode" style="max-width: 320px;"><table style="table-layout: fixed; height: 100%; width: 100%;"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)"><i class="{{$iconLeft}}"></i></button></th><th colspan="{{ rows[0].length - 2 }}"><button tabindex="-1" type="button" class="btn btn-default btn-block text-strong" ng-click="$toggleMode()"><strong style="text-transform: capitalize;" ng-bind="title"></strong></button></th><th><button tabindex="-1" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)"><i class="{{$iconRight}}"></i></button></th></tr><tr ng-show="showLabels" ng-bind-html="labels"></tr></thead><tbody><tr ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%"><td class="text-center" ng-repeat="(j, el) in row"><button tabindex="-1" type="button" class="btn btn-default" style="width: 100%" ng-class="{\'btn-primary\': el.selected, \'btn-info btn-today\': el.isToday && !el.selected}" ng-click="$select(el.date)" ng-disabled="el.disabled"><span ng-class="{\'text-muted\': el.muted}" ng-bind="el.label"></span></button></td></tr></tbody></table></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/datetime/datepicker.tpl.html',
+    '<div class="dropdown-menu datepicker" ng-class="\'datepicker-mode-\' + $mode" style="max-width: 320px;"><table style="table-layout: fixed; height: 100%; width: 100%;"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)"><i class="{{$iconLeft}}"></i></button></th><th colspan="{{ rows[0].length - 2 }}"><button tabindex="-1" type="button" class="btn btn-default btn-block text-strong" ng-click="$toggleMode()"><strong style="text-transform: capitalize;" ng-bind="title"></strong></button></th><th><button tabindex="-1" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)"><i class="{{$iconRight}}"></i></button></th></tr><tr ng-show="showLabels" ng-bind-html="labels"></tr></thead><tbody><tr ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%"><td class="text-center" ng-repeat="(j, el) in row"><button tabindex="-1" type="button" class="btn btn-default" style="width: 100%" ng-class="{\'btn-primary\': el.selected, \'btn-info btn-today\': el.isToday && !el.selected}" ng-click="$select(el.date)" ng-disabled="el.disabled"><span ng-class="{\'text-muted\': el.muted}" ng-bind="el.label"></span></button></td></tr></tbody></table></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/datetime/timepicker.tpl.html',
-            '<div class="dropdown-menu timepicker" style="min-width: 0px;width: auto;"><table height="100%"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 0)"><i class="{{ $iconUp }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 1)"><i class="{{ $iconUp }}"></i></button></th></tr></thead><tbody><tr ng-repeat="(i, row) in rows"><td class="text-center"><button tabindex="-1" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[0].selected}" ng-click="$select(row[0].date, 0)" ng-disabled="row[0].disabled"><span ng-class="{\'text-muted\': row[0].muted}" ng-bind="row[0].label"></span></button></td><td><span ng-bind="i == midIndex ? timeSeparator : \' \'"></span></td><td class="text-center"><button tabindex="-1" ng-if="row[1].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[1].selected}" ng-click="$select(row[1].date, 1)" ng-disabled="row[1].disabled"><span ng-class="{\'text-muted\': row[1].muted}" ng-bind="row[1].label"></span></button></td><td ng-if="showAM">&nbsp;</td><td ng-if="showAM"><button tabindex="-1" ng-show="i == midIndex - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !!isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">AM</button> <button tabindex="-1" ng-show="i == midIndex + 1 - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">PM</button></td></tr></tbody><tfoot><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 0)"><i class="{{ $iconDown }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 1)"><i class="{{ $iconDown }}"></i></button></th></tr></tfoot></table></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/datetime/timepicker.tpl.html',
+    '<div class="dropdown-menu timepicker" style="min-width: 0px;width: auto;"><table height="100%"><thead><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 0)"><i class="{{ $iconUp }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 1)"><i class="{{ $iconUp }}"></i></button></th></tr></thead><tbody><tr ng-repeat="(i, row) in rows"><td class="text-center"><button tabindex="-1" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[0].selected}" ng-click="$select(row[0].date, 0)" ng-disabled="row[0].disabled"><span ng-class="{\'text-muted\': row[0].muted}" ng-bind="row[0].label"></span></button></td><td><span ng-bind="i == midIndex ? timeSeparator : \' \'"></span></td><td class="text-center"><button tabindex="-1" ng-if="row[1].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[1].selected}" ng-click="$select(row[1].date, 1)" ng-disabled="row[1].disabled"><span ng-class="{\'text-muted\': row[1].muted}" ng-bind="row[1].label"></span></button></td><td ng-if="showAM">&nbsp;</td><td ng-if="showAM"><button tabindex="-1" ng-show="i == midIndex - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !!isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">AM</button> <button tabindex="-1" ng-show="i == midIndex + 1 - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">PM</button></td></tr></tbody><tfoot><tr class="text-center"><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 0)"><i class="{{ $iconDown }}"></i></button></th><th>&nbsp;</th><th><button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 1)"><i class="{{ $iconDown }}"></i></button></th></tr></tfoot></table></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/dropdown/dropdown.tpl.html',
-            '<ul tabindex="-1" class="dropdown-menu" role="menu"><li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content"><a role="menuitem" tabindex="-1" ng-href="{{item.href}}" ng-if="!item.divider && item.href" target="{{item.target || \'\'}}" ng-bind="item.text"></a> <a role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="!item.divider && item.click" ng-click="$eval(item.click);$hide()" ng-bind="item.text"></a></li></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/dropdown/dropdown.tpl.html',
+    '<ul tabindex="-1" class="dropdown-menu" role="menu"><li role="presentation" ng-class="{divider: item.divider}" ng-repeat="item in content"><a role="menuitem" tabindex="-1" ng-href="{{item.href}}" ng-if="!item.divider && item.href" target="{{item.target || \'\'}}" ng-bind="item.text"></a> <a role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="!item.divider && item.click" ng-click="$eval(item.click);$hide()" ng-bind="item.text"></a></li></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/form/fg.tpl.html',
-            '<div class="form-group form-group-sm"><label>{{lb}}</label> <input type="text" class="form-control" ng-model="ip"></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/form/fg.tpl.html',
+    '<div class="form-group form-group-sm"><label>{{lb}}</label> <input type="text" class="form-control" ng-model="ip"></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/form/fgh.tpl.html',
-            '<div class="form-group form-group-sm"><label class="control-label {{w0}}">{{lb}}</label><div class="{{w1}}" ng-transclude=""></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/form/fgh.tpl.html',
+    '<div class="form-group form-group-sm"><label class="control-label {{w0}}">{{lb}}</label><div class="{{w1}}" ng-transclude=""></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/form/fgh2.tpl.html',
-            '<div class="form-group form-group-sm" jb-transclude=""><label class="control-label {{w0}}">{{lb[0]}}</label><div class="{{w1}}" jb-partial="input1"></div><label class="control-label {{w2}}">{{lb[1]}}</label><div class="{{w3}}" jb-partial="input2"></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/form/fgh2.tpl.html',
+    '<div class="form-group form-group-sm" jb-transclude=""><label class="control-label {{w0}}">{{lb[0]}}</label><div class="{{w1}}" jb-partial="input1"></div><label class="control-label {{w2}}">{{lb[1]}}</label><div class="{{w3}}" jb-partial="input2"></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
-            '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
+    '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/modal/modal.tpl.html',
-            '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/modal/modal.tpl.html',
+    '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/pager/pager.tpl.html',
-            '<ul class="pager"><li ng-repeat="page in pages" ng-class="{disabled: page.disabled, previous: page.previous, next: page.next}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/pager/pager.tpl.html',
+    '<ul class="pager"><li ng-repeat="page in pages" ng-class="{disabled: page.disabled, previous: page.previous, next: page.next}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/pager/pagination.tpl.html',
-            '<ul class="pagination"><li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/pager/pagination.tpl.html',
+    '<ul class="pagination"><li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/popover/popover.tpl.html',
-            '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/popover/popover.tpl.html',
+    '<div class="popover"><div class="arrow"></div><h3 class="popover-title" ng-bind="title" ng-show="title"></h3><div class="popover-content" ng-bind="content"></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/radioList/radioList.tpl.html',
-            '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/radioList/radioList.tpl.html',
+    '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/select/select.tpl.html',
-            '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/select/select.tpl.html',
+    '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/table/table.tpl.html',
-            '<div class="panel panel-default jb-table"><div class="panel-heading"><div ng-repeat="col in meta.cols" class="jb-table-col"></div></div><div class="panel-collapse"><table class="table table-bordered table-hover table-condensed"><thead><tr><th ng-repeat="col in meta.cols" jb-table-th="" class="th">{{col.title}}</th></tr></thead><tbody jb-table-body=""></tbody><tfoot></tfoot></table></div><div class="panel-footer"><jb-pagination ng-if="meta.page" boundary-links="true" total-items="meta.ctx.total" page="meta.ctx.page" max-size="10" items-per-page="meta.filter.perPage" on-select-page="pager(page)" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></jb-pagination></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/table/table.tpl.html',
+    '<div class="panel panel-default jb-table"><div class="panel-heading"><div ng-repeat="col in meta.cols" class="jb-table-col"></div></div><div class="panel-collapse"><table class="table table-bordered table-hover table-condensed"><thead><tr><th ng-repeat="col in meta.cols" jb-table-th="" class="th">{{col.title}}</th></tr></thead><tbody jb-table-body=""></tbody><tfoot></tfoot></table></div><div class="panel-footer"><jb-pagination ng-if="meta.page" boundary-links="true" total-items="meta.ctx.total" page="meta.ctx.page" max-size="10" items-per-page="meta.filter.perPage" on-select-page="pager(page)" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></jb-pagination></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/table/tableHeader.tpl.html',
-            '<tr><th ng-repeat="c in $columns">{{c.title}}</th></tr>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/table/tableHeader.tpl.html',
+    '<tr><th ng-repeat="c in $columns">{{c.title}}</th></tr>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/table/th-opt.tpl.html',
-            '<ul tabindex="-1" class="dropdown-menu jb-th-opt" role="menu"><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet"></span> 升序(最低到最高)</a></li><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span> 降序(最高到最低)</a></li><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort"></span> 不排序</a></li><li class="divider"></li><li ng-if="col.filter!==undefined"><div class="jb-th-opt-filter"><select class="form-control input-sm" ng-model="col.filter.Rules[0].Opt" ng-options="k as v for (k,v) in filterOpt"></select><input type="text" class="form-control input-sm" ng-model="col.filter.Rules[0].Val1"><div class="form-group-sm"><label class="radio-inline" ng-repeat="(k,v) in filterCondition"><input type="radio" value="{{k}}" ng-model="col.filter.Condition"> {{v}}</label></div><select class="form-control input-sm" ng-model="col.filter.Rules[1].Opt" ng-disabled="col.filter.Condition==\'NONE\'" ng-options="k as v for (k,v) in filterOpt"></select><input type="text" class="form-control input-sm" ng-model="col.filter.Rules[1].Val1" ng-disabled="col.filter.Condition==\'NONE\'"><div class="btn-group btn-group-sm pull-right"><button class="btn btn-primary" ng-click="onFilter()">过滤</button> <button class="btn btn-default">清除</button></div></div></li></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/table/th-opt.tpl.html',
+    '<ul tabindex="-1" class="dropdown-menu jb-th-opt" role="menu"><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet"></span> 升序(最低到最高)</a></li><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span> 降序(最高到最低)</a></li><li role="presentation"><a role="menuitem" href="#"><span class="glyphicon glyphicon-sort"></span> 不排序</a></li><li class="divider"></li><li ng-if="col.filter!==undefined"><div class="jb-th-opt-filter"><select class="form-control input-sm" ng-model="col.filter.Rules[0].Opt" ng-options="k as v for (k,v) in filterOpt"></select><input type="text" class="form-control input-sm" ng-model="col.filter.Rules[0].Val1"><div class="form-group-sm"><label class="radio-inline" ng-repeat="(k,v) in filterCondition"><input type="radio" value="{{k}}" ng-model="col.filter.Condition"> {{v}}</label></div><select class="form-control input-sm" ng-model="col.filter.Rules[1].Opt" ng-disabled="col.filter.Condition==\'NONE\'" ng-options="k as v for (k,v) in filterOpt"></select><input type="text" class="form-control input-sm" ng-model="col.filter.Rules[1].Val1" ng-disabled="col.filter.Condition==\'NONE\'"><div class="btn-group btn-group-sm pull-right"><button class="btn btn-primary" ng-click="onFilter()">过滤</button> <button class="btn btn-default">清除</button></div></div></li></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/table/th.tpl.html',
-            '<div ng-style="{\'width\':col.width+\'px\'}"><span ng-click="onTitle()">{{col.title}}</span> <span class="jb-th-right"><span ng-if="col.sort!==undefined" class="glyphicon" ng-class="{\'glyphicon-triangle-bottom\':$index%2==1,\'glyphicon-triangle-top\':$index%2==0}"></span> <span ng-if="col.filter!==undefined" class="glyphicon glyphicon-filter"></span> <span class="glyphicon glyphicon-menu-down" jb-pop="pop" data-auto-close="false" data-placement="right-bottom" data-template="jb/ui/table/th-opt.tpl.html"></span></span></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/table/th.tpl.html',
+    '<div ng-style="{\'width\':col.width+\'px\'}"><span ng-click="onTitle()">{{col.title}}</span> <span class="jb-th-right"><span ng-if="col.sort!==undefined" class="glyphicon" ng-class="{\'glyphicon-triangle-bottom\':$index%2==1,\'glyphicon-triangle-top\':$index%2==0}"></span> <span ng-if="col.filter!==undefined" class="glyphicon glyphicon-filter"></span> <span class="glyphicon glyphicon-menu-down" jb-pop="pop" data-auto-close="false" data-placement="right-bottom" data-template="jb/ui/table/th-opt.tpl.html"></span></span></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tab.tpl.html',
-            '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tooltip/tooltip.tpl.html',
+    '<div class="tooltip in" ng-show="title"><div class="tooltip-arrow"></div><div class="tooltip-inner" ng-bind="title"></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
-            '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tab.tpl.html',
+    '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tabs/tabset.tpl.html',
-            '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
+    '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/tooltip/tooltip.tpl.html',
-            '<div class="tooltip in" ng-show="title"><div class="tooltip-arrow"></div><div class="tooltip-inner" ng-bind="title"></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset.tpl.html',
+    '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
+}]);
 })();
 
-(function (module) {
-    try {
-        module = angular.module('jb.ui.tpls');
-    } catch (e) {
-        module = angular.module('jb.ui.tpls', []);
-    }
-    module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put('jb/ui/widget/widget.tpl.html',
-            '<div class="panel panel-default" jb-transclude=""><div class="panel-heading" jb-partial="heading"><div jb-partial="actions" class="btn-group btn-group-xs pull-right"><button class="btn btn-default" ng-click="$toggle()">X</button></div><div jb-partial="tools" class="pull-right" style="margin-right: 10px"></div><h4 class="panel-title" jb-partial="title">{{title}}</h4></div><div class="panel-collapse collapse" ng-class="{\'in\':!isHide}" jb-partial="body"><div class="panel-body" jb-partial="content"></div></div><div class="panel-footer" ng-if="showFoot"></div></div>');
-    }]);
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/widget/widget.tpl.html',
+    '<div class="panel panel-default" jb-transclude=""><div class="panel-heading" jb-partial="heading"><div jb-partial="actions" class="btn-group btn-group-xs pull-right"><button class="btn btn-default" ng-click="$toggle()">X</button></div><div jb-partial="tools" class="pull-right" style="margin-right: 10px"></div><h4 class="panel-title" jb-partial="title">{{title}}</h4></div><div class="panel-collapse collapse" ng-class="{\'in\':!isHide}" jb-partial="body"><div class="panel-body" jb-partial="content"></div></div><div class="panel-footer" ng-if="showFoot"></div></div>');
+}]);
 })();
 
 /**
@@ -5872,457 +5870,443 @@ angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.
  * @author grevory <greg@gregpike.ca>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-(function (window, angular, undefined) {
-    /*jshint globalstrict:true*/
-    'use strict';
+(function ( window, angular, undefined ) {
+/*jshint globalstrict:true*/
+'use strict';
 
-    var isDefined = angular.isDefined,
-        isUndefined = angular.isUndefined,
-        isNumber = angular.isNumber,
-        isObject = angular.isObject,
-        isArray = angular.isArray,
-        extend = angular.extend,
-        toJson = angular.toJson;
-    var angularLocalStorage = angular.module('LocalStorageModule', []);
+var isDefined = angular.isDefined,
+  isUndefined = angular.isUndefined,
+  isNumber = angular.isNumber,
+  isObject = angular.isObject,
+  isArray = angular.isArray,
+  extend = angular.extend,
+  toJson = angular.toJson;
+var angularLocalStorage = angular.module('LocalStorageModule', []);
 
-    angularLocalStorage.provider('localStorageService', function () {
+angularLocalStorage.provider('localStorageService', function() {
 
-        // You should set a prefix to avoid overwriting any local storage variables from the rest of your app
-        // e.g. localStorageServiceProvider.setPrefix('yourAppName');
-        // With provider you can use config as this:
-        // myApp.config(function (localStorageServiceProvider) {
-        //    localStorageServiceProvider.prefix = 'yourAppName';
-        // });
-        this.prefix = 'ls';
+  // You should set a prefix to avoid overwriting any local storage variables from the rest of your app
+  // e.g. localStorageServiceProvider.setPrefix('yourAppName');
+  // With provider you can use config as this:
+  // myApp.config(function (localStorageServiceProvider) {
+  //    localStorageServiceProvider.prefix = 'yourAppName';
+  // });
+  this.prefix = 'ls';
 
-        // You could change web storage type localstorage or sessionStorage
-        this.storageType = 'localStorage';
+  // You could change web storage type localstorage or sessionStorage
+  this.storageType = 'localStorage';
 
-        // Cookie options (usually in case of fallback)
-        // expiry = Number of days before cookies expire // 0 = Does not expire
-        // path = The web path the cookie represents
-        this.cookie = {
-            expiry: 30,
-            path: '/'
-        };
+  // Cookie options (usually in case of fallback)
+  // expiry = Number of days before cookies expire // 0 = Does not expire
+  // path = The web path the cookie represents
+  this.cookie = {
+    expiry: 30,
+    path: '/'
+  };
 
-        // Send signals for each of the following actions?
-        this.notify = {
-            setItem: true,
-            removeItem: false
-        };
+  // Send signals for each of the following actions?
+  this.notify = {
+    setItem: true,
+    removeItem: false
+  };
 
-        // Setter for the prefix
-        this.setPrefix = function (prefix) {
-            this.prefix = prefix;
-            return this;
-        };
+  // Setter for the prefix
+  this.setPrefix = function(prefix) {
+    this.prefix = prefix;
+    return this;
+  };
 
-        // Setter for the storageType
-        this.setStorageType = function (storageType) {
-            this.storageType = storageType;
-            return this;
-        };
+   // Setter for the storageType
+   this.setStorageType = function(storageType) {
+     this.storageType = storageType;
+     return this;
+   };
 
-        // Setter for cookie config
-        this.setStorageCookie = function (exp, path) {
-            this.cookie.expiry = exp;
-            this.cookie.path = path;
-            return this;
-        };
+  // Setter for cookie config
+  this.setStorageCookie = function(exp, path) {
+    this.cookie.expiry = exp;
+    this.cookie.path = path;
+    return this;
+  };
 
-        // Setter for cookie domain
-        this.setStorageCookieDomain = function (domain) {
-            this.cookie.domain = domain;
-            return this;
-        };
+  // Setter for cookie domain
+  this.setStorageCookieDomain = function(domain) {
+    this.cookie.domain = domain;
+    return this;
+  };
 
-        // Setter for notification config
-        // itemSet & itemRemove should be booleans
-        this.setNotify = function (itemSet, itemRemove) {
-            this.notify = {
-                setItem: itemSet,
-                removeItem: itemRemove
-            };
-            return this;
-        };
+  // Setter for notification config
+  // itemSet & itemRemove should be booleans
+  this.setNotify = function(itemSet, itemRemove) {
+    this.notify = {
+      setItem: itemSet,
+      removeItem: itemRemove
+    };
+    return this;
+  };
 
-        this.$get = ['$rootScope', '$window', '$document', '$parse', function ($rootScope, $window, $document, $parse) {
-            var self = this;
-            var prefix = self.prefix;
-            var cookie = self.cookie;
-            var notify = self.notify;
-            var storageType = self.storageType;
-            var webStorage;
+  this.$get = ['$rootScope', '$window', '$document', '$parse', function($rootScope, $window, $document, $parse) {
+    var self = this;
+    var prefix = self.prefix;
+    var cookie = self.cookie;
+    var notify = self.notify;
+    var storageType = self.storageType;
+    var webStorage;
 
-            // When Angular's $document is not available
-            if (!$document) {
-                $document = document;
-            } else if ($document[0]) {
-                $document = $document[0];
+    // When Angular's $document is not available
+    if (!$document) {
+      $document = document;
+    } else if ($document[0]) {
+      $document = $document[0];
+    }
+
+    // If there is a prefix set in the config lets use that with an appended period for readability
+    if (prefix.substr(-1) !== '.') {
+      prefix = !!prefix ? prefix + '.' : '';
+    }
+    var deriveQualifiedKey = function(key) {
+      return prefix + key;
+    };
+    // Checks the browser to see if local storage is supported
+    var browserSupportsLocalStorage = (function () {
+      try {
+        var supported = (storageType in $window && $window[storageType] !== null);
+
+        // When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage
+        // is available, but trying to call .setItem throws an exception.
+        //
+        // "QUOTA_EXCEEDED_ERR: DOM Exception 22: An attempt was made to add something to storage
+        // that exceeded the quota."
+        var key = deriveQualifiedKey('__' + Math.round(Math.random() * 1e7));
+        if (supported) {
+          webStorage = $window[storageType];
+          webStorage.setItem(key, '');
+          webStorage.removeItem(key);
+        }
+
+        return supported;
+      } catch (e) {
+        storageType = 'cookie';
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return false;
+      }
+    }());
+
+    // Directly adds a value to local storage
+    // If local storage is not available in the browser use cookies
+    // Example use: localStorageService.add('library','angular');
+    var addToLocalStorage = function (key, value) {
+      // Let's convert undefined values to null to get the value consistent
+      if (isUndefined(value)) {
+        value = null;
+      } else {
+        value = toJson(value);
+      }
+
+      // If this browser does not support local storage use cookies
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: 'cookie'});
+        }
+        return addToCookies(key, value);
+      }
+
+      try {
+        if (webStorage) {webStorage.setItem(deriveQualifiedKey(key), value)};
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: self.storageType});
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return addToCookies(key, value);
+      }
+      return true;
+    };
+
+    // Directly get a value from local storage
+    // Example use: localStorageService.get('library'); // returns 'angular'
+    var getFromLocalStorage = function (key) {
+
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning','LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        return getFromCookies(key);
+      }
+
+      var item = webStorage ? webStorage.getItem(deriveQualifiedKey(key)) : null;
+      // angular.toJson will convert null to 'null', so a proper conversion is needed
+      // FIXME not a perfect solution, since a valid 'null' string can't be stored
+      if (!item || item === 'null') {
+        return null;
+      }
+
+      try {
+        return JSON.parse(item);
+      } catch (e) {
+        return item;
+      }
+    };
+
+    // Remove an item from local storage
+    // Example use: localStorageService.remove('library'); // removes the key/value pair of library='angular'
+    var removeFromLocalStorage = function () {
+      var i, key;
+      for (i=0; i<arguments.length; i++) {
+        key = arguments[i];
+        if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+          if (!browserSupportsLocalStorage) {
+            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+          }
+
+          if (notify.removeItem) {
+            $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {key: key, storageType: 'cookie'});
+          }
+          removeFromCookies(key);
+        }
+        else {
+          try {
+            webStorage.removeItem(deriveQualifiedKey(key));
+            if (notify.removeItem) {
+              $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
+                key: key,
+                storageType: self.storageType
+              });
             }
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+            removeFromCookies(key);
+          }
+        }
+      }
+    };
 
-            // If there is a prefix set in the config lets use that with an appended period for readability
-            if (prefix.substr(-1) !== '.') {
-                prefix = !!prefix ? prefix + '.' : '';
-            }
-            var deriveQualifiedKey = function (key) {
-                return prefix + key;
-            };
-            // Checks the browser to see if local storage is supported
-            var browserSupportsLocalStorage = (function () {
-                try {
-                    var supported = (storageType in $window && $window[storageType] !== null);
+    // Return array of keys for local storage
+    // Example use: var keys = localStorageService.keys()
+    var getKeysForLocalStorage = function () {
 
-                    // When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage
-                    // is available, but trying to call .setItem throws an exception.
-                    //
-                    // "QUOTA_EXCEEDED_ERR: DOM Exception 22: An attempt was made to add something to storage
-                    // that exceeded the quota."
-                    var key = deriveQualifiedKey('__' + Math.round(Math.random() * 1e7));
-                    if (supported) {
-                        webStorage = $window[storageType];
-                        webStorage.setItem(key, '');
-                        webStorage.removeItem(key);
-                    }
+      if (!browserSupportsLocalStorage) {
+        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        return false;
+      }
 
-                    return supported;
-                } catch (e) {
-                    storageType = 'cookie';
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                    return false;
-                }
-            }());
+      var prefixLength = prefix.length;
+      var keys = [];
+      for (var key in webStorage) {
+        // Only return keys that are for this app
+        if (key.substr(0,prefixLength) === prefix) {
+          try {
+            keys.push(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error', e.Description);
+            return [];
+          }
+        }
+      }
+      return keys;
+    };
 
-            // Directly adds a value to local storage
-            // If local storage is not available in the browser use cookies
-            // Example use: localStorageService.add('library','angular');
-            var addToLocalStorage = function (key, value) {
-                // Let's convert undefined values to null to get the value consistent
-                if (isUndefined(value)) {
-                    value = null;
-                } else {
-                    value = toJson(value);
-                }
+    // Remove all data for this app from local storage
+    // Also optionally takes a regular expression string and removes the matching key-value pairs
+    // Example use: localStorageService.clearAll();
+    // Should be used mostly for development purposes
+    var clearAllFromLocalStorage = function (regularExpression) {
 
-                // If this browser does not support local storage use cookies
-                if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
-                    if (!browserSupportsLocalStorage) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                    }
+      // Setting both regular expressions independently
+      // Empty strings result in catchall RegExp
+      var prefixRegex = !!prefix ? new RegExp('^' + prefix) : new RegExp();
+      var testRegex = !!regularExpression ? new RegExp(regularExpression) : new RegExp();
 
-                    if (notify.setItem) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.setitem', {
-                            key: key,
-                            newvalue: value,
-                            storageType: 'cookie'
-                        });
-                    }
-                    return addToCookies(key, value);
-                }
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+        return clearAllFromCookies();
+      }
 
-                try {
-                    if (webStorage) {
-                        webStorage.setItem(deriveQualifiedKey(key), value)
-                    }
-                    ;
-                    if (notify.setItem) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.setitem', {
-                            key: key,
-                            newvalue: value,
-                            storageType: self.storageType
-                        });
-                    }
-                } catch (e) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                    return addToCookies(key, value);
-                }
-                return true;
-            };
+      var prefixLength = prefix.length;
 
-            // Directly get a value from local storage
-            // Example use: localStorageService.get('library'); // returns 'angular'
-            var getFromLocalStorage = function (key) {
+      for (var key in webStorage) {
+        // Only remove items that are for this app and match the regular expression
+        if (prefixRegex.test(key) && testRegex.test(key.substr(prefixLength))) {
+          try {
+            removeFromLocalStorage(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+            return clearAllFromCookies();
+          }
+        }
+      }
+      return true;
+    };
 
-                if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
-                    if (!browserSupportsLocalStorage) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                    }
+    // Checks the browser to see if cookies are supported
+    var browserSupportsCookies = (function() {
+      try {
+        return $window.navigator.cookieEnabled ||
+          ("cookie" in $document && ($document.cookie.length > 0 ||
+          ($document.cookie = "test").indexOf.call($document.cookie, "test") > -1));
+      } catch (e) {
+          $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+          return false;
+      }
+    }());
 
-                    return getFromCookies(key);
-                }
+    // Directly adds a value to cookies
+    // Typically used as a fallback is local storage is not available in the browser
+    // Example use: localStorageService.cookie.add('library','angular');
+    var addToCookies = function (key, value, daysToExpiry) {
 
-                var item = webStorage ? webStorage.getItem(deriveQualifiedKey(key)) : null;
-                // angular.toJson will convert null to 'null', so a proper conversion is needed
-                // FIXME not a perfect solution, since a valid 'null' string can't be stored
-                if (!item || item === 'null') {
-                    return null;
-                }
+      if (isUndefined(value)) {
+        return false;
+      } else if(isArray(value) || isObject(value)) {
+        value = toJson(value);
+      }
 
-                try {
-                    return JSON.parse(item);
-                } catch (e) {
-                    return item;
-                }
-            };
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
 
-            // Remove an item from local storage
-            // Example use: localStorageService.remove('library'); // removes the key/value pair of library='angular'
-            var removeFromLocalStorage = function () {
-                var i, key;
-                for (i = 0; i < arguments.length; i++) {
-                    key = arguments[i];
-                    if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
-                        if (!browserSupportsLocalStorage) {
-                            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                        }
+      try {
+        var expiry = '',
+            expiryDate = new Date(),
+            cookieDomain = '';
 
-                        if (notify.removeItem) {
-                            $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
-                                key: key,
-                                storageType: 'cookie'
-                            });
-                        }
-                        removeFromCookies(key);
-                    }
-                    else {
-                        try {
-                            webStorage.removeItem(deriveQualifiedKey(key));
-                            if (notify.removeItem) {
-                                $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
-                                    key: key,
-                                    storageType: self.storageType
-                                });
-                            }
-                        } catch (e) {
-                            $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                            removeFromCookies(key);
-                        }
-                    }
-                }
-            };
+        if (value === null) {
+          // Mark that the cookie has expired one day ago
+          expiryDate.setTime(expiryDate.getTime() + (-1 * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+          value = '';
+        } else if (isNumber(daysToExpiry) && daysToExpiry !== 0) {
+          expiryDate.setTime(expiryDate.getTime() + (daysToExpiry * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+        } else if (cookie.expiry !== 0) {
+          expiryDate.setTime(expiryDate.getTime() + (cookie.expiry * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+        }
+        if (!!key) {
+          var cookiePath = "; path=" + cookie.path;
+          if(cookie.domain){
+            cookieDomain = "; domain=" + cookie.domain;
+          }
+          $document.cookie = deriveQualifiedKey(key) + "=" + encodeURIComponent(value) + expiry + cookiePath + cookieDomain;
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+        return false;
+      }
+      return true;
+    };
 
-            // Return array of keys for local storage
-            // Example use: var keys = localStorageService.keys()
-            var getKeysForLocalStorage = function () {
+    // Directly get a value from a cookie
+    // Example use: localStorageService.cookie.get('library'); // returns 'angular'
+    var getFromCookies = function (key) {
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
 
-                if (!browserSupportsLocalStorage) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                    return false;
-                }
+      var cookies = $document.cookie && $document.cookie.split(';') || [];
+      for(var i=0; i < cookies.length; i++) {
+        var thisCookie = cookies[i];
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1,thisCookie.length);
+        }
+        if (thisCookie.indexOf(deriveQualifiedKey(key) + '=') === 0) {
+          var storedValues = decodeURIComponent(thisCookie.substring(prefix.length + key.length + 1, thisCookie.length))
+          try {
+            return JSON.parse(storedValues);
+          } catch(e) {
+            return storedValues
+          }
+        }
+      }
+      return null;
+    };
 
-                var prefixLength = prefix.length;
-                var keys = [];
-                for (var key in webStorage) {
-                    // Only return keys that are for this app
-                    if (key.substr(0, prefixLength) === prefix) {
-                        try {
-                            keys.push(key.substr(prefixLength));
-                        } catch (e) {
-                            $rootScope.$broadcast('LocalStorageModule.notification.error', e.Description);
-                            return [];
-                        }
-                    }
-                }
-                return keys;
-            };
+    var removeFromCookies = function (key) {
+      addToCookies(key,null);
+    };
 
-            // Remove all data for this app from local storage
-            // Also optionally takes a regular expression string and removes the matching key-value pairs
-            // Example use: localStorageService.clearAll();
-            // Should be used mostly for development purposes
-            var clearAllFromLocalStorage = function (regularExpression) {
+    var clearAllFromCookies = function () {
+      var thisCookie = null, thisKey = null;
+      var prefixLength = prefix.length;
+      var cookies = $document.cookie.split(';');
+      for(var i = 0; i < cookies.length; i++) {
+        thisCookie = cookies[i];
 
-                // Setting both regular expressions independently
-                // Empty strings result in catchall RegExp
-                var prefixRegex = !!prefix ? new RegExp('^' + prefix) : new RegExp();
-                var testRegex = !!regularExpression ? new RegExp(regularExpression) : new RegExp();
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1, thisCookie.length);
+        }
 
-                if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
-                    if (!browserSupportsLocalStorage) {
-                        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
-                    }
-                    return clearAllFromCookies();
-                }
+        var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
+        removeFromCookies(key);
+      }
+    };
 
-                var prefixLength = prefix.length;
+    var getStorageType = function() {
+      return storageType;
+    };
 
-                for (var key in webStorage) {
-                    // Only remove items that are for this app and match the regular expression
-                    if (prefixRegex.test(key) && testRegex.test(key.substr(prefixLength))) {
-                        try {
-                            removeFromLocalStorage(key.substr(prefixLength));
-                        } catch (e) {
-                            $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                            return clearAllFromCookies();
-                        }
-                    }
-                }
-                return true;
-            };
+    // Add a listener on scope variable to save its changes to local storage
+    // Return a function which when called cancels binding
+    var bindToScope = function(scope, key, def, lsKey) {
+      lsKey = lsKey || key;
+      var value = getFromLocalStorage(lsKey);
 
-            // Checks the browser to see if cookies are supported
-            var browserSupportsCookies = (function () {
-                try {
-                    return $window.navigator.cookieEnabled ||
-                        ("cookie" in $document && ($document.cookie.length > 0 ||
-                        ($document.cookie = "test").indexOf.call($document.cookie, "test") > -1));
-                } catch (e) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                    return false;
-                }
-            }());
+      if (value === null && isDefined(def)) {
+        value = def;
+      } else if (isObject(value) && isObject(def)) {
+        value = extend(def, value);
+      }
 
-            // Directly adds a value to cookies
-            // Typically used as a fallback is local storage is not available in the browser
-            // Example use: localStorageService.cookie.add('library','angular');
-            var addToCookies = function (key, value, daysToExpiry) {
+      $parse(key).assign(scope, value);
 
-                if (isUndefined(value)) {
-                    return false;
-                } else if (isArray(value) || isObject(value)) {
-                    value = toJson(value);
-                }
+      return scope.$watch(key, function(newVal) {
+        addToLocalStorage(lsKey, newVal);
+      }, isObject(scope[key]));
+    };
 
-                if (!browserSupportsCookies) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
-                    return false;
-                }
+    // Return localStorageService.length
+    // ignore keys that not owned
+    var lengthOfLocalStorage = function() {
+      var count = 0;
+      var storage = $window[storageType];
+      for(var i = 0; i < storage.length; i++) {
+        if(storage.key(i).indexOf(prefix) === 0 ) {
+          count++;
+        }
+      }
+      return count;
+    };
 
-                try {
-                    var expiry = '',
-                        expiryDate = new Date(),
-                        cookieDomain = '';
-
-                    if (value === null) {
-                        // Mark that the cookie has expired one day ago
-                        expiryDate.setTime(expiryDate.getTime() + (-1 * 24 * 60 * 60 * 1000));
-                        expiry = "; expires=" + expiryDate.toGMTString();
-                        value = '';
-                    } else if (isNumber(daysToExpiry) && daysToExpiry !== 0) {
-                        expiryDate.setTime(expiryDate.getTime() + (daysToExpiry * 24 * 60 * 60 * 1000));
-                        expiry = "; expires=" + expiryDate.toGMTString();
-                    } else if (cookie.expiry !== 0) {
-                        expiryDate.setTime(expiryDate.getTime() + (cookie.expiry * 24 * 60 * 60 * 1000));
-                        expiry = "; expires=" + expiryDate.toGMTString();
-                    }
-                    if (!!key) {
-                        var cookiePath = "; path=" + cookie.path;
-                        if (cookie.domain) {
-                            cookieDomain = "; domain=" + cookie.domain;
-                        }
-                        $document.cookie = deriveQualifiedKey(key) + "=" + encodeURIComponent(value) + expiry + cookiePath + cookieDomain;
-                    }
-                } catch (e) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
-                    return false;
-                }
-                return true;
-            };
-
-            // Directly get a value from a cookie
-            // Example use: localStorageService.cookie.get('library'); // returns 'angular'
-            var getFromCookies = function (key) {
-                if (!browserSupportsCookies) {
-                    $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
-                    return false;
-                }
-
-                var cookies = $document.cookie && $document.cookie.split(';') || [];
-                for (var i = 0; i < cookies.length; i++) {
-                    var thisCookie = cookies[i];
-                    while (thisCookie.charAt(0) === ' ') {
-                        thisCookie = thisCookie.substring(1, thisCookie.length);
-                    }
-                    if (thisCookie.indexOf(deriveQualifiedKey(key) + '=') === 0) {
-                        var storedValues = decodeURIComponent(thisCookie.substring(prefix.length + key.length + 1, thisCookie.length))
-                        try {
-                            return JSON.parse(storedValues);
-                        } catch (e) {
-                            return storedValues
-                        }
-                    }
-                }
-                return null;
-            };
-
-            var removeFromCookies = function (key) {
-                addToCookies(key, null);
-            };
-
-            var clearAllFromCookies = function () {
-                var thisCookie = null, thisKey = null;
-                var prefixLength = prefix.length;
-                var cookies = $document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    thisCookie = cookies[i];
-
-                    while (thisCookie.charAt(0) === ' ') {
-                        thisCookie = thisCookie.substring(1, thisCookie.length);
-                    }
-
-                    var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
-                    removeFromCookies(key);
-                }
-            };
-
-            var getStorageType = function () {
-                return storageType;
-            };
-
-            // Add a listener on scope variable to save its changes to local storage
-            // Return a function which when called cancels binding
-            var bindToScope = function (scope, key, def, lsKey) {
-                lsKey = lsKey || key;
-                var value = getFromLocalStorage(lsKey);
-
-                if (value === null && isDefined(def)) {
-                    value = def;
-                } else if (isObject(value) && isObject(def)) {
-                    value = extend(def, value);
-                }
-
-                $parse(key).assign(scope, value);
-
-                return scope.$watch(key, function (newVal) {
-                    addToLocalStorage(lsKey, newVal);
-                }, isObject(scope[key]));
-            };
-
-            // Return localStorageService.length
-            // ignore keys that not owned
-            var lengthOfLocalStorage = function () {
-                var count = 0;
-                var storage = $window[storageType];
-                for (var i = 0; i < storage.length; i++) {
-                    if (storage.key(i).indexOf(prefix) === 0) {
-                        count++;
-                    }
-                }
-                return count;
-            };
-
-            return {
-                isSupported: browserSupportsLocalStorage,
-                getStorageType: getStorageType,
-                set: addToLocalStorage,
-                add: addToLocalStorage, //DEPRECATED
-                get: getFromLocalStorage,
-                keys: getKeysForLocalStorage,
-                remove: removeFromLocalStorage,
-                clearAll: clearAllFromLocalStorage,
-                bind: bindToScope,
-                deriveKey: deriveQualifiedKey,
-                length: lengthOfLocalStorage,
-                cookie: {
-                    isSupported: browserSupportsCookies,
-                    set: addToCookies,
-                    add: addToCookies, //DEPRECATED
-                    get: getFromCookies,
-                    remove: removeFromCookies,
-                    clearAll: clearAllFromCookies
-                }
-            };
-        }];
-    });
-})(window, window.angular);
+    return {
+      isSupported: browserSupportsLocalStorage,
+      getStorageType: getStorageType,
+      set: addToLocalStorage,
+      add: addToLocalStorage, //DEPRECATED
+      get: getFromLocalStorage,
+      keys: getKeysForLocalStorage,
+      remove: removeFromLocalStorage,
+      clearAll: clearAllFromLocalStorage,
+      bind: bindToScope,
+      deriveKey: deriveQualifiedKey,
+      length: lengthOfLocalStorage,
+      cookie: {
+        isSupported: browserSupportsCookies,
+        set: addToCookies,
+        add: addToCookies, //DEPRECATED
+        get: getFromCookies,
+        remove: removeFromCookies,
+        clearAll: clearAllFromCookies
+      }
+    };
+  }];
+});
+})( window, window.angular );
