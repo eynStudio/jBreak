@@ -13,7 +13,7 @@
         };
     });
 
-    module.directive('jbFormGroupH', function($jb){
+    module.directive('jbFormGroupH', function(){
         return {
             restrict: 'EA',
             transclude: true,

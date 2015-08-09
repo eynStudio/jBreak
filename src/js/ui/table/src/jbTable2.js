@@ -1,6 +1,4 @@
 (function (ng) {
-    "use strict";
-
     var module = ng.module('jb.ui.table');
     var strFilterOpt={
         empty:'空',
@@ -16,12 +14,12 @@
         OR: '或'
     };
 
-    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window,$jb) {
+    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window,jb$) {
         var win = angular.element($window);
         var ctrl = this;
         var orderBy = $filter('orderBy');
         var filter = $filter('filter');
-        var fmt=$jb.fmt;
+        var fmt=jb$.fmt;
         var $src = $scope.$src = copyRefs($scope.src);
         var cols = [];
         var filtered;
