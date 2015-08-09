@@ -1,100 +1,38 @@
 (function (ng) {
     var module = ng.module('jb.ctx', ['jb.sys', 'jb.res', 'jb.ctx4gp']);
 
-    module.factory('jbCtx', function (jbSys, jbRes) {
-        function get(url, params, methods) {
+    function updateParams(ctx,params,newParams) {
+        ctx.params = newParams ? params : ng.extend(ctx.params, params);
+    }
 
+    module.factory('jbCtx', function (jbRes) {
+        return function(url, params, methods) {
             var res = jbRes(url, params, methods);
             var ctx = {
                 res: res,
-                lst:[],
-                sys: jbSys,
-                asCur: asCur,
                 refresh: refresh,
-                edit: edit,
                 save: save,
-                pager: pager,
-                page:1
+                get:res.get,
+                remove:res.remove
             };
             return ctx;
 
-            function refresh() {
-                ctx.paging = res.page({page: ctx.page});
-            }
-
-            function pager(page) {
-                ctx.page=page;
-                refresh();
-            }
-
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = angular.copy(ctx.paging.Items[idx]);
+            function refresh(params,newParams) {
+                updateParams(ctx,params,newParams);
+                ctx.obj = res.get(ctx.params);
             }
 
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function () {
-                    ctx.refresh();
-                    ctx.editIdx = null;
+                res.save(ctx.obj, function (data) {
+                    ctx.obj=data;
                 });
             }
-
-            function asCur() {
-                jbSys.curCtx = ctx;
-            }
-            }
-
-        return get;
-    });
-
-    module.factory('jbCtxP', function (jbRes) {
-        function get(url, params, methods) {
-            var res = jbRes(url, params, methods);
-            var ctx = {
-                lst: [],
-                res: res,
-                refresh: refresh,
-                edit: edit,
-                save: save,
-                pager: pager,
-                total:0,
-                filter: {page: 1, perPage: 20}
-            };
-            return ctx;
-
-            function refresh(filter) {
-                if(filter) ctx.filter=filter;
-                res.post({filter: ''}, ctx.filter, function (data) {
-                    ctx.lst=data.Items;
-                    ctx.total=data.Total;
-                });
-            }
-
-            function pager(page) {
-                ctx.filter.page=page;
-                refresh();
-            }
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = ng.copy(ctx.lst[idx]);
-            }
-
-            function save() {
-                (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function (data) {
-                    ctx.refresh();
-                    ctx.editIdx = null;
-                });
-            }
-
         }
-
-        return get;
     });
 
     module.factory('jbCtxL', function (jbRes) {
-        function get(url, params, methods) {
+        return function(url, params, methods) {
             var defaults = {
                 save: {method: 'put', isArray: true}
             };
@@ -104,31 +42,70 @@
                 lst: [],
                 res: res,
                 refresh: refresh,
+                add:add,
                 edit: edit,
-                save: save
+                save: save,
+                del:del
             };
             return ctx;
 
-            function refresh() {
-                ctx.lst = res.query();
+            function refresh(params,newParams) {
+                updateParams(ctx,params,newParams);
+                ctx.lst = res.query(ctx.params);
             }
 
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = ng.copy(ctx.lst[idx]);
+            function add() {
+                (ctx.beforeAdd || ng.noop)();
+                ctx.obj=null;
+                ctx._obj=res.create();
             }
-
+            function edit(it) {
+                (ctx.beforeEdit || ng.noop)();
+                ctx.obj = it;
+                ctx._obj = ng.copy(it);
+            }
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function (data) {
+                res.save(ctx._obj, function (data) {
                     ctx.lst = data;
-                    ctx.editIdx = null;
+                    ctx._obj=ctx.obj = null;
+                });
+            }
+            function del(it){
+                (ctx.beforeDel || ng.noop)();
+                res.del(it,function(data){
+                    ctx.lst = data;
+                });
+            }
+        }
+    });
+
+    module.factory('jbCtxP', function (jbCtxL) {
+        return function(url, params, methods) {
+            var ctx = jbCtxL(url, params, methods);
+            ctx = ng.extend(ctx, {
+                refresh: refresh,
+                pager: pager,
+                total: 0,
+                params:{filter: ''},
+                filter: {page: 1, perPage: 20}
+            });
+            return ctx;
+
+            function refresh(filter,params,newParams) {
+                if (filter) ctx.filter = filter;
+                updateParams(ctx,params,newParams);
+                ctx.res.post(ctx.params, ctx.filter, function (data) {
+                    ctx.lst = data.Items;
+                    ctx.total = data.Total;
                 });
             }
 
+            function pager(page) {
+                ctx.filter.page = page;
+                refresh();
+            }
         }
-
-        return get;
     });
 
 })(angular);

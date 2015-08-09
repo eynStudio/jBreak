@@ -109,43 +109,39 @@ $provide.value("$locale", {
 });
 }]);
 
-(function() {
+angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
+    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('jBreak')
+            .setNotify(true, true);
+    }]);
 
-    var module = angular.module('jb',[]),
+(function(ng) {
+
+    var module = ng.module('jb',[]),
         uid = 0;
 
-    module.service('$jb', function () {
-        this.nextUid=nextUid;
-        this.fmt=fmt;
+    module.factory('jb$', function () {
+        return {
+            nextUid:nextUid,
+            fmt:fmt
+        };
     });
 
-
-
     function fmt() {
-        // The string containing the format items (e.g. "{0}")
-        // will and always has to be the first argument.
         var theString = arguments[0];
-
-        // start with the second argument (i = 1)
         for (var i = 1; i < arguments.length; i++) {
-            // "gm" = RegEx options for Global search (more than one instance)
-            // and for Multiline search
             var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
             theString = theString.replace(regEx, arguments[i]);
         }
-
         return theString;
     }
 
     function nextUid() {
         return '_' + (++uid);
-
-        function _nextUid() {
-            return ++uid;
-        }
-
     }
-})();
+
+})(angular);
 angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
     .factory('jbAuthUser', ["localStorageService", function (localStorageService) {
         function Xm() {
@@ -246,100 +242,38 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
 (function (ng) {
     var module = ng.module('jb.ctx', ['jb.sys', 'jb.res', 'jb.ctx4gp']);
 
-    module.factory('jbCtx', ["jbSys", "jbRes", function (jbSys, jbRes) {
-        function get(url, params, methods) {
+    function updateParams(ctx,params,newParams) {
+        ctx.params = newParams ? params : ng.extend(ctx.params, params);
+    }
 
+    module.factory('jbCtx', ["jbRes", function (jbRes) {
+        return function(url, params, methods) {
             var res = jbRes(url, params, methods);
             var ctx = {
                 res: res,
-                lst:[],
-                sys: jbSys,
-                asCur: asCur,
                 refresh: refresh,
-                edit: edit,
                 save: save,
-                pager: pager,
-                page:1
+                get:res.get,
+                remove:res.remove
             };
             return ctx;
 
-            function refresh() {
-                ctx.paging = res.page({page: ctx.page});
-            }
-
-            function pager(page) {
-                ctx.page=page;
-                refresh();
-            }
-
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = angular.copy(ctx.paging.Items[idx]);
+            function refresh(params,newParams) {
+                updateParams(ctx,params,newParams);
+                ctx.obj = res.get(ctx.params);
             }
 
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function () {
-                    ctx.refresh();
-                    ctx.editIdx = null;
+                res.save(ctx.obj, function (data) {
+                    ctx.obj=data;
                 });
             }
-
-            function asCur() {
-                jbSys.curCtx = ctx;
-            }
-            }
-
-        return get;
-    }]);
-
-    module.factory('jbCtxP', ["jbRes", function (jbRes) {
-        function get(url, params, methods) {
-            var res = jbRes(url, params, methods);
-            var ctx = {
-                lst: [],
-                res: res,
-                refresh: refresh,
-                edit: edit,
-                save: save,
-                pager: pager,
-                total:0,
-                filter: {page: 1, perPage: 20}
-            };
-            return ctx;
-
-            function refresh(filter) {
-                if(filter) ctx.filter=filter;
-                res.post({filter: ''}, ctx.filter, function (data) {
-                    ctx.lst=data.Items;
-                    ctx.total=data.Total;
-                });
-            }
-
-            function pager(page) {
-                ctx.filter.page=page;
-                refresh();
-            }
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = ng.copy(ctx.lst[idx]);
-            }
-
-            function save() {
-                (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function (data) {
-                    ctx.refresh();
-                    ctx.editIdx = null;
-                });
-            }
-
         }
-
-        return get;
     }]);
 
     module.factory('jbCtxL', ["jbRes", function (jbRes) {
-        function get(url, params, methods) {
+        return function(url, params, methods) {
             var defaults = {
                 save: {method: 'put', isArray: true}
             };
@@ -349,31 +283,70 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 lst: [],
                 res: res,
                 refresh: refresh,
+                add:add,
                 edit: edit,
-                save: save
+                save: save,
+                del:del
             };
             return ctx;
 
-            function refresh() {
-                ctx.lst = res.query();
+            function refresh(params,newParams) {
+                updateParams(ctx,params,newParams);
+                ctx.lst = res.query(ctx.params);
             }
 
-            function edit(idx) {
-                ctx.editIdx = idx;
-                ctx.editItem = idx === -1 ? res.create() : ctx.editItem = ng.copy(ctx.lst[idx]);
+            function add() {
+                (ctx.beforeAdd || ng.noop)();
+                ctx.obj=null;
+                ctx._obj=res.create();
             }
-
+            function edit(it) {
+                (ctx.beforeEdit || ng.noop)();
+                ctx.obj = it;
+                ctx._obj = ng.copy(it);
+            }
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx.editItem, function (data) {
+                res.save(ctx._obj, function (data) {
                     ctx.lst = data;
-                    ctx.editIdx = null;
+                    ctx._obj=ctx.obj = null;
+                });
+            }
+            function del(it){
+                (ctx.beforeDel || ng.noop)();
+                res.del(it,function(data){
+                    ctx.lst = data;
+                });
+            }
+        }
+    }]);
+
+    module.factory('jbCtxP', ["jbCtxL", function (jbCtxL) {
+        return function(url, params, methods) {
+            var ctx = jbCtxL(url, params, methods);
+            ctx = ng.extend(ctx, {
+                refresh: refresh,
+                pager: pager,
+                total: 0,
+                params:{filter: ''},
+                filter: {page: 1, perPage: 20}
+            });
+            return ctx;
+
+            function refresh(filter,params,newParams) {
+                if (filter) ctx.filter = filter;
+                updateParams(ctx,params,newParams);
+                ctx.res.post(ctx.params, ctx.filter, function (data) {
+                    ctx.lst = data.Items;
+                    ctx.total = data.Total;
                 });
             }
 
+            function pager(page) {
+                ctx.filter.page = page;
+                refresh();
+            }
         }
-
-        return get;
     }]);
 
 })(angular);
@@ -679,6 +652,8 @@ angular.module('jb.sys', [])
 
 
 })(angular);
+angular.module('jb.be', []);
+
 angular.module('jb.ui', ['ngLocale', 'jb.ui.tpls', 'jb.util', 'jb', 'jb.ui.table', 'jb.zd', 'jb.ui.widget']);
 
 angular.module('jb.util.dateParser', [])
@@ -1238,8 +1213,85 @@ angular.module('jb.util.position', [])
     }]);
 angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position','jb.util.parseOptions']);
 
-angular.module('jb.be', []);
+angular.module('jb.ui')
+    .provider('$jbAside', function () {
 
+        var defaults = this.defaults = {
+            animation: 'am-fade-and-slide-right',
+            type: 'aside',
+            placement: null,
+            template: 'jb/ui/aside/aside.tpl.html',
+            contentTemplate: false,
+            container: false,
+            element: null,
+            backdrop: true,
+            keyboard: true,
+            html: true,
+            show: true
+        };
+
+        this.$get = ["$jbModal", function ($jbModal) {
+            function AsideFactory(config) {
+                var $aside = {};
+                var options = angular.extend({}, defaults, config);
+                $aside = $jbModal(options);
+                return $aside;
+            }
+
+            return AsideFactory;
+        }];
+    })
+
+    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                        });
+                    }
+                });
+
+                // Support scope as an object
+              if(  attr.jbAside ) {
+                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                      if (angular.isObject(newValue)) {
+                          angular.extend(scope, newValue);
+                      } else {
+                          scope.content = newValue;
+                      }
+                  }, true);
+              }
+                // Initialize aside
+                var aside = $jbAside(options);
+
+                // Trigger
+                element.on(attr.trigger || 'click', aside.toggle);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (aside) aside.destroy();
+                    options = null;
+                    aside = null;
+                });
+
+            }
+        };
+
+    }]);
 angular.module('jb.ui')
     .provider('$jbAlert', function () {
         var defaults = this.defaults = {
@@ -1322,85 +1374,6 @@ angular.module('jb.ui')
                     options = null;
                     alert = null;
                 });
-            }
-        };
-
-    }]);
-angular.module('jb.ui')
-    .provider('$jbAside', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade-and-slide-right',
-            type: 'aside',
-            placement: null,
-            template: 'jb/ui/aside/aside.tpl.html',
-            contentTemplate: false,
-            container: false,
-            element: null,
-            backdrop: true,
-            keyboard: true,
-            html: true,
-            show: true
-        };
-
-        this.$get = ["$jbModal", function ($jbModal) {
-            function AsideFactory(config) {
-                var $aside = {};
-                var options = angular.extend({}, defaults, config);
-                $aside = $jbModal(options);
-                return $aside;
-            }
-
-            return AsideFactory;
-        }];
-    })
-
-    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                        });
-                    }
-                });
-
-                // Support scope as an object
-              if(  attr.jbAside ) {
-                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                      if (angular.isObject(newValue)) {
-                          angular.extend(scope, newValue);
-                      } else {
-                          scope.content = newValue;
-                      }
-                  }, true);
-              }
-                // Initialize aside
-                var aside = $jbAside(options);
-
-                // Trigger
-                element.on(attr.trigger || 'click', aside.toggle);
-
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (aside) aside.destroy();
-                    options = null;
-                    aside = null;
-                });
-
             }
         };
 
@@ -3101,7 +3074,7 @@ angular.module('jb.ui')
         };
     });
 
-    module.directive('jbFormGroupH', ["$jb", function($jb){
+    module.directive('jbFormGroupH', function(){
         return {
             restrict: 'EA',
             transclude: true,
@@ -3123,7 +3096,7 @@ angular.module('jb.ui')
                 }
             }
         };
-    }]);
+    });
 
 })();
 angular.module('jb.ui')
@@ -4104,6 +4077,314 @@ angular.module('jb.ui')
     "use strict";
     ng.module('jb.ui.table', ['jb.filter']);
 })(angular);
+//ref https://github.com/angular-ui/bootstrap/blob/bootstrap3/src/tabs/tabs.js
+
+angular.module('jb.ui')
+
+    .controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
+        var ctrl = this,
+            tabs = ctrl.tabs = $scope.tabs = [];
+
+        ctrl.select = function (tab) {
+            angular.forEach(tabs, function (tab) {
+                tab.active = false;
+            });
+            tab.active = true;
+        };
+
+        ctrl.addTab = function addTab(tab) {
+            tabs.push(tab);
+            if (tabs.length === 1 || tab.active) {
+                ctrl.select(tab);
+            }
+        };
+
+        ctrl.removeTab = function removeTab(tab) {
+            var index = tabs.indexOf(tab);
+            //Select a new tab if the tab to be removed is selected
+            if (tab.active && tabs.length > 1) {
+                //If this is the last tab, select the previous tab. else, the next tab.
+                var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
+                ctrl.select(tabs[newActiveIndex]);
+            }
+            tabs.splice(index, 1);
+        };
+    }])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabset
+ * @restrict EA
+ *
+ * @description
+ * Tabset is the outer container for the tabs directive
+ *
+ * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
+ * @param {boolean=} justified Whether or not to use justified styling for the tabs.
+ * @param {string=} direction  What direction the tabs should be rendered. Available:
+ * 'right', 'left', 'below'.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <tabset>
+ <tab heading="Tab 1"><b>First</b> Content!</tab>
+ <tab heading="Tab 2"><i>Second</i> Content!</tab>
+ </tabset>
+ <hr />
+ <tabset vertical="true">
+ <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
+ <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
+ </tabset>
+ <tabset justified="true">
+ <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
+ <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
+ </tabset>
+ </file>
+ </example>
+ */
+    .directive('tabset', function () {
+        return {
+            restrict: 'EA',
+            transclude: true,
+            replace: true,
+            require: '^tabset',
+            scope: {},
+            controller: 'TabsetController',
+            templateUrl: 'jb/ui/tabs/tabset.tpl.html',
+            compile: function (elm, attrs, transclude) {
+                return function (scope, element, attrs, tabsetCtrl) {
+                    scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
+                    scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
+                    scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
+                    scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+                    scope.tabsAbove = (scope.direction != 'below');
+                    tabsetCtrl.$scope = scope;
+                    tabsetCtrl.$transcludeFn = transclude;
+                };
+            }
+        };
+    })
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tab
+ * @restrict EA
+ *
+ * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
+ * @param {string=} select An expression to evaluate when the tab is selected.
+ * @param {boolean=} active A binding, telling whether or not this tab is selected.
+ * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
+ *
+ * @description
+ * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <div ng-controller="TabsDemoCtrl">
+ <button class="btn btn-small" ng-click="items[0].active = true">
+ Select item 1, using active binding
+ </button>
+ <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
+ Enable/disable item 2, using disabled binding
+ </button>
+ <br />
+ <tabset>
+ <tab heading="Tab 1">First Tab</tab>
+ <tab select="alertMe()">
+ <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
+ Second Tab, with alert callback and html heading!
+ </tab>
+ <tab ng-repeat="item in items"
+ heading="{{item.title}}"
+ disabled="item.disabled"
+ active="item.active">
+ {{item.content}}
+ </tab>
+ </tabset>
+ </div>
+ </file>
+ <file name="script.js">
+ function TabsDemoCtrl($scope) {
+      $scope.items = [
+        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
+        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
+      ];
+
+      $scope.alertMe = function() {
+        setTimeout(function() {
+          alert("You've selected the alert tab!");
+        });
+      };
+    };
+ </file>
+ </example>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabHeading
+ * @restrict EA
+ *
+ * @description
+ * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
+ *
+ * @example
+ <example module="ui.bootstrap">
+ <file name="index.html">
+ <tabset>
+ <tab>
+ <tab-heading><b>HTML</b> in my titles?!</tab-heading>
+ And some content, too!
+ </tab>
+ <tab>
+ <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
+ That's right.
+ </tab>
+ </tabset>
+ </file>
+ </example>
+ */
+    .directive('tab', ['$parse', function ($parse) {
+        return {
+            require: '^tabset',
+            restrict: 'EA',
+            replace: true,
+            templateUrl: 'jb/ui/tabs/tab.tpl.html',
+            transclude: true,
+            scope: {
+                heading: '@',
+                onSelect: '&select', //This callback is called in contentHeadingTransclude
+                //once it inserts the tab's content into the dom
+                onDeselect: '&deselect'
+            },
+            controller: function () {
+                //Empty controller so other directives can require being 'under' a tab
+            },
+            compile: function (elm, attrs, transclude) {
+                return function postLink(scope, elm, attrs, tabsetCtrl) {
+                    var getActive, setActive;
+                    if (attrs.active) {
+                        getActive = $parse(attrs.active);
+                        setActive = getActive.assign;
+                        scope.$parent.$watch(getActive, function updateActive(value, oldVal) {
+                            // Avoid re-initializing scope.active as it is already initialized
+                            // below. (watcher is called async during init with value ===
+                            // oldVal)
+                            if (value !== oldVal) {
+                                scope.active = !!value;
+                            }
+                        });
+                        scope.active = getActive(scope.$parent);
+                    } else {
+                        setActive = getActive = angular.noop;
+                    }
+
+                    scope.$watch('active', function (active) {
+                        // Note this watcher also initializes and assigns scope.active to the
+                        // attrs.active expression.
+                        setActive(scope.$parent, active);
+                        if (active) {
+                            tabsetCtrl.select(scope);
+                            scope.onSelect();
+                        } else {
+                            scope.onDeselect();
+                        }
+                    });
+
+                    scope.disabled = false;
+                    if (attrs.disabled) {
+                        scope.$parent.$watch($parse(attrs.disabled), function (value) {
+                            scope.disabled = !!value;
+                        });
+                    }
+
+                    scope.select = function () {
+                        if (!scope.disabled) {
+                            scope.active = true;
+                        }
+                    };
+
+                    tabsetCtrl.addTab(scope);
+                    scope.$on('$destroy', function () {
+                        tabsetCtrl.removeTab(scope);
+                    });
+
+
+                    //We need to transclude later, once the content container is ready.
+                    //when this link happens, we're inside a tab heading.
+                    scope.$transcludeFn = transclude;
+                };
+            }
+        };
+    }])
+
+    .directive('tabHeadingTransclude', [function () {
+        return {
+            restrict: 'A',
+            require: '^tab',
+            link: function (scope, elm, attrs, tabCtrl) {
+                scope.$watch('headingElement', function updateHeadingElement(heading) {
+                    if (heading) {
+                        elm.html('');
+                        elm.append(heading);
+                    }
+                });
+            }
+        };
+    }])
+
+    .directive('tabContentTransclude', function () {
+        return {
+            restrict: 'A',
+            require: '^tabset',
+            link: function (scope, elm, attrs) {
+                var tab = scope.$eval(attrs.tabContentTransclude);
+
+                //Now our tab is ready to be transcluded: both the tab heading area
+                //and the tab content area are loaded.  Transclude 'em both.
+                tab.$transcludeFn(tab.$parent, function (contents) {
+                    angular.forEach(contents, function (node) {
+                        if (isTabHeading(node)) {
+                            //Let tabHeadingTransclude know.
+                            tab.headingElement = node;
+                        } else {
+                            elm.append(node);
+                        }
+                    });
+                });
+            }
+        };
+        function isTabHeading(node) {
+            return node.tagName && (
+                node.hasAttribute('tab-heading') ||
+                    node.hasAttribute('data-tab-heading') ||
+                    node.tagName.toLowerCase() === 'tab-heading' ||
+                    node.tagName.toLowerCase() === 'data-tab-heading'
+                );
+        }
+    })
+
+    .directive('tabsetTitles', function () {
+        return {
+            restrict: 'A',
+            require: '^tabset',
+            templateUrl: 'jb/ui/tabs/tabset-titles.tpl.html',
+            replace: true,
+            link: function (scope, elm, attrs, tabsetCtrl) {
+                if (!scope.$eval(attrs.tabsetTitles)) {
+                    elm.remove();
+                } else {
+                    //now that tabs location has been decided, transclude the tab titles in
+                    tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function (node) {
+                        elm.append(node);
+                    });
+                }
+            }
+        };
+    });
+
 angular.module('jb.ui')
     .provider('$jbTip', function () {
         var defaults = this.defaults = {
@@ -4807,314 +5088,6 @@ angular.module('jb.ui')
     }]);
 
 
-//ref https://github.com/angular-ui/bootstrap/blob/bootstrap3/src/tabs/tabs.js
-
-angular.module('jb.ui')
-
-    .controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
-        var ctrl = this,
-            tabs = ctrl.tabs = $scope.tabs = [];
-
-        ctrl.select = function (tab) {
-            angular.forEach(tabs, function (tab) {
-                tab.active = false;
-            });
-            tab.active = true;
-        };
-
-        ctrl.addTab = function addTab(tab) {
-            tabs.push(tab);
-            if (tabs.length === 1 || tab.active) {
-                ctrl.select(tab);
-            }
-        };
-
-        ctrl.removeTab = function removeTab(tab) {
-            var index = tabs.indexOf(tab);
-            //Select a new tab if the tab to be removed is selected
-            if (tab.active && tabs.length > 1) {
-                //If this is the last tab, select the previous tab. else, the next tab.
-                var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
-                ctrl.select(tabs[newActiveIndex]);
-            }
-            tabs.splice(index, 1);
-        };
-    }])
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tabset
- * @restrict EA
- *
- * @description
- * Tabset is the outer container for the tabs directive
- *
- * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
- * @param {boolean=} justified Whether or not to use justified styling for the tabs.
- * @param {string=} direction  What direction the tabs should be rendered. Available:
- * 'right', 'left', 'below'.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <tabset>
- <tab heading="Tab 1"><b>First</b> Content!</tab>
- <tab heading="Tab 2"><i>Second</i> Content!</tab>
- </tabset>
- <hr />
- <tabset vertical="true">
- <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
- <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
- </tabset>
- <tabset justified="true">
- <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
- <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
- </tabset>
- </file>
- </example>
- */
-    .directive('tabset', function () {
-        return {
-            restrict: 'EA',
-            transclude: true,
-            replace: true,
-            require: '^tabset',
-            scope: {},
-            controller: 'TabsetController',
-            templateUrl: 'jb/ui/tabs/tabset.tpl.html',
-            compile: function (elm, attrs, transclude) {
-                return function (scope, element, attrs, tabsetCtrl) {
-                    scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
-                    scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
-                    scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-                    scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
-                    scope.tabsAbove = (scope.direction != 'below');
-                    tabsetCtrl.$scope = scope;
-                    tabsetCtrl.$transcludeFn = transclude;
-                };
-            }
-        };
-    })
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tab
- * @restrict EA
- *
- * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
- * @param {string=} select An expression to evaluate when the tab is selected.
- * @param {boolean=} active A binding, telling whether or not this tab is selected.
- * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
- *
- * @description
- * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <div ng-controller="TabsDemoCtrl">
- <button class="btn btn-small" ng-click="items[0].active = true">
- Select item 1, using active binding
- </button>
- <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
- Enable/disable item 2, using disabled binding
- </button>
- <br />
- <tabset>
- <tab heading="Tab 1">First Tab</tab>
- <tab select="alertMe()">
- <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
- Second Tab, with alert callback and html heading!
- </tab>
- <tab ng-repeat="item in items"
- heading="{{item.title}}"
- disabled="item.disabled"
- active="item.active">
- {{item.content}}
- </tab>
- </tabset>
- </div>
- </file>
- <file name="script.js">
- function TabsDemoCtrl($scope) {
-      $scope.items = [
-        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
-        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
-      ];
-
-      $scope.alertMe = function() {
-        setTimeout(function() {
-          alert("You've selected the alert tab!");
-        });
-      };
-    };
- </file>
- </example>
- */
-
-/**
- * @ngdoc directive
- * @name ui.bootstrap.tabs.directive:tabHeading
- * @restrict EA
- *
- * @description
- * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
- *
- * @example
- <example module="ui.bootstrap">
- <file name="index.html">
- <tabset>
- <tab>
- <tab-heading><b>HTML</b> in my titles?!</tab-heading>
- And some content, too!
- </tab>
- <tab>
- <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
- That's right.
- </tab>
- </tabset>
- </file>
- </example>
- */
-    .directive('tab', ['$parse', function ($parse) {
-        return {
-            require: '^tabset',
-            restrict: 'EA',
-            replace: true,
-            templateUrl: 'jb/ui/tabs/tab.tpl.html',
-            transclude: true,
-            scope: {
-                heading: '@',
-                onSelect: '&select', //This callback is called in contentHeadingTransclude
-                //once it inserts the tab's content into the dom
-                onDeselect: '&deselect'
-            },
-            controller: function () {
-                //Empty controller so other directives can require being 'under' a tab
-            },
-            compile: function (elm, attrs, transclude) {
-                return function postLink(scope, elm, attrs, tabsetCtrl) {
-                    var getActive, setActive;
-                    if (attrs.active) {
-                        getActive = $parse(attrs.active);
-                        setActive = getActive.assign;
-                        scope.$parent.$watch(getActive, function updateActive(value, oldVal) {
-                            // Avoid re-initializing scope.active as it is already initialized
-                            // below. (watcher is called async during init with value ===
-                            // oldVal)
-                            if (value !== oldVal) {
-                                scope.active = !!value;
-                            }
-                        });
-                        scope.active = getActive(scope.$parent);
-                    } else {
-                        setActive = getActive = angular.noop;
-                    }
-
-                    scope.$watch('active', function (active) {
-                        // Note this watcher also initializes and assigns scope.active to the
-                        // attrs.active expression.
-                        setActive(scope.$parent, active);
-                        if (active) {
-                            tabsetCtrl.select(scope);
-                            scope.onSelect();
-                        } else {
-                            scope.onDeselect();
-                        }
-                    });
-
-                    scope.disabled = false;
-                    if (attrs.disabled) {
-                        scope.$parent.$watch($parse(attrs.disabled), function (value) {
-                            scope.disabled = !!value;
-                        });
-                    }
-
-                    scope.select = function () {
-                        if (!scope.disabled) {
-                            scope.active = true;
-                        }
-                    };
-
-                    tabsetCtrl.addTab(scope);
-                    scope.$on('$destroy', function () {
-                        tabsetCtrl.removeTab(scope);
-                    });
-
-
-                    //We need to transclude later, once the content container is ready.
-                    //when this link happens, we're inside a tab heading.
-                    scope.$transcludeFn = transclude;
-                };
-            }
-        };
-    }])
-
-    .directive('tabHeadingTransclude', [function () {
-        return {
-            restrict: 'A',
-            require: '^tab',
-            link: function (scope, elm, attrs, tabCtrl) {
-                scope.$watch('headingElement', function updateHeadingElement(heading) {
-                    if (heading) {
-                        elm.html('');
-                        elm.append(heading);
-                    }
-                });
-            }
-        };
-    }])
-
-    .directive('tabContentTransclude', function () {
-        return {
-            restrict: 'A',
-            require: '^tabset',
-            link: function (scope, elm, attrs) {
-                var tab = scope.$eval(attrs.tabContentTransclude);
-
-                //Now our tab is ready to be transcluded: both the tab heading area
-                //and the tab content area are loaded.  Transclude 'em both.
-                tab.$transcludeFn(tab.$parent, function (contents) {
-                    angular.forEach(contents, function (node) {
-                        if (isTabHeading(node)) {
-                            //Let tabHeadingTransclude know.
-                            tab.headingElement = node;
-                        } else {
-                            elm.append(node);
-                        }
-                    });
-                });
-            }
-        };
-        function isTabHeading(node) {
-            return node.tagName && (
-                node.hasAttribute('tab-heading') ||
-                    node.hasAttribute('data-tab-heading') ||
-                    node.tagName.toLowerCase() === 'tab-heading' ||
-                    node.tagName.toLowerCase() === 'data-tab-heading'
-                );
-        }
-    })
-
-    .directive('tabsetTitles', function () {
-        return {
-            restrict: 'A',
-            require: '^tabset',
-            templateUrl: 'jb/ui/tabs/tabset-titles.tpl.html',
-            replace: true,
-            link: function (scope, elm, attrs, tabsetCtrl) {
-                if (!scope.$eval(attrs.tabsetTitles)) {
-                    elm.remove();
-                } else {
-                    //now that tabs location has been decided, transclude the tab titles in
-                    tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function (node) {
-                        elm.append(node);
-                    });
-                }
-            }
-        };
-    });
-
 (function() {
     var module = angular.module('jb.ui');
 
@@ -5344,8 +5317,6 @@ angular.module('jb.ui')
 })(angular);
 
 (function (ng) {
-    "use strict";
-
     var module = ng.module('jb.ui.table');
     var strFilterOpt={
         empty:'空',
@@ -5361,12 +5332,12 @@ angular.module('jb.ui')
         OR: '或'
     };
 
-    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window,$jb) {
+    function tableCtr($scope, $element, $attrs, $filter, $parse, $timeout, $window,jb$) {
         var win = angular.element($window);
         var ctrl = this;
         var orderBy = $filter('orderBy');
         var filter = $filter('filter');
-        var fmt=$jb.fmt;
+        var fmt=jb$.fmt;
         var $src = $scope.$src = copyRefs($scope.src);
         var cols = [];
         var filtered;
@@ -5484,7 +5455,7 @@ angular.module('jb.ui')
             return td;
         }
     }
-    tableCtr.$inject = ["$scope", "$element", "$attrs", "$filter", "$parse", "$timeout", "$window", "$jb"];
+    tableCtr.$inject = ["$scope", "$element", "$attrs", "$filter", "$parse", "$timeout", "$window", "jb$"];
 
     module.directive('jbTable2',["$compile", "$q", "$parse", function($compile,$q,$parse) {
             return {
@@ -5555,13 +5526,6 @@ angular.module('jb.ui')
         }]
     );
 })(angular);
-
-angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
-    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-        localStorageServiceProvider
-            .setPrefix('jBreak')
-            .setNotify(true, true);
-    }]);
 
 (function(module) {
 try {
@@ -5678,8 +5642,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
-    '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
+  $templateCache.put('jb/ui/modal/modal.tpl.html',
+    '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
 }]);
 })();
 
@@ -5690,8 +5654,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/modal/modal.tpl.html',
-    '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
+  $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
+    '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
 }]);
 })();
 
@@ -5762,6 +5726,42 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tab.tpl.html',
+    '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
+    '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset.tpl.html',
+    '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('jb/ui/table/table.tpl.html',
     '<div class="panel panel-default jb-table"><div class="panel-heading"><div ng-repeat="col in meta.cols" class="jb-table-col"></div></div><div class="panel-collapse"><table class="table table-bordered table-hover table-condensed"><thead><tr><th ng-repeat="col in meta.cols" jb-table-th="" class="th">{{col.title}}</th></tr></thead><tbody jb-table-body=""></tbody><tfoot></tfoot></table></div><div class="panel-footer"><jb-pagination ng-if="meta.page" boundary-links="true" total-items="meta.ctx.total" page="meta.ctx.page" max-size="10" items-per-page="meta.filter.perPage" on-select-page="pager(page)" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></jb-pagination></div></div>');
 }]);
@@ -5812,42 +5812,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('jb/ui/tooltip/tooltip.tpl.html',
     '<div class="tooltip in" ng-show="title"><div class="tooltip-arrow"></div><div class="tooltip-inner" ng-bind="title"></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tab.tpl.html',
-    '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
-    '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tabset.tpl.html',
-    '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
 }]);
 })();
 
