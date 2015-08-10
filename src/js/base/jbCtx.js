@@ -44,38 +44,43 @@
                 refresh: refresh,
                 add:add,
                 edit: edit,
+                editId:editId,
                 save: save,
-                del:del
+                del:del,
+                _updateData:updateData
             };
             return ctx;
 
             function refresh(params,newParams) {
                 updateParams(ctx,params,newParams);
-                ctx.lst = res.query(ctx.params);
+                res.query(ctx.params,ctx._updateData);
             }
 
             function add() {
                 (ctx.beforeAdd || ng.noop)();
-                ctx.obj=null;
-                ctx._obj=res.create();
+                ctx._obj=null;
+                ctx.obj=res.create();
             }
             function edit(it) {
                 (ctx.beforeEdit || ng.noop)();
-                ctx.obj = it;
-                ctx._obj = ng.copy(it);
+                ctx._obj = it;
+                ctx.obj = ng.copy(it);
+            }
+            function editId(id) {
+                (ctx.beforeEdit || ng.noop)();
+                ctx.obj = id ? res.get({id: id}) : add();
             }
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx._obj, function (data) {
-                    ctx.lst = data;
-                    ctx._obj=ctx.obj = null;
-                });
+                res.save(ctx.obj,ctx._updateData);
             }
-            function del(it){
+            function del(id){
                 (ctx.beforeDel || ng.noop)();
-                res.del(it,function(data){
-                    ctx.lst = data;
-                });
+                res.del({id:id},ctx._updateData);
+            }
+            function updateData(data){
+                ctx.lst = data;
+                ctx._obj=ctx.obj = null;
             }
         }
     });
@@ -86,6 +91,7 @@
             ctx = ng.extend(ctx, {
                 refresh: refresh,
                 pager: pager,
+                _updateData:updateData,
                 total: 0,
                 params:{filter: ''},
                 filter: {page: 1, perPage: 20}
@@ -95,15 +101,18 @@
             function refresh(filter,params,newParams) {
                 if (filter) ctx.filter = filter;
                 updateParams(ctx,params,newParams);
-                ctx.res.post(ctx.params, ctx.filter, function (data) {
-                    ctx.lst = data.Items;
-                    ctx.total = data.Total;
-                });
+                ctx.res.post(ctx.params, ctx.filter,ctx._updateData);
             }
 
             function pager(page) {
                 ctx.filter.page = page;
                 refresh();
+            }
+
+            function updateData(data){
+                ctx.lst = data.Items;
+                ctx.total = data.Total;
+                ctx._obj=ctx.obj = null;
             }
         }
     });

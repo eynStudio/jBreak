@@ -278,38 +278,43 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 refresh: refresh,
                 add:add,
                 edit: edit,
+                editId:editId,
                 save: save,
-                del:del
+                del:del,
+                _updateData:updateData
             };
             return ctx;
 
             function refresh(params,newParams) {
                 updateParams(ctx,params,newParams);
-                ctx.lst = res.query(ctx.params);
+                res.query(ctx.params,ctx._updateData);
             }
 
             function add() {
                 (ctx.beforeAdd || ng.noop)();
-                ctx.obj=null;
-                ctx._obj=res.create();
+                ctx._obj=null;
+                ctx.obj=res.create();
             }
             function edit(it) {
                 (ctx.beforeEdit || ng.noop)();
-                ctx.obj = it;
-                ctx._obj = ng.copy(it);
+                ctx._obj = it;
+                ctx.obj = ng.copy(it);
+            }
+            function editId(id) {
+                (ctx.beforeEdit || ng.noop)();
+                ctx.obj = id ? res.get({id: id}) : add();
             }
             function save() {
                 (ctx.beforeSave || ng.noop)();
-                res.save(ctx._obj, function (data) {
-                    ctx.lst = data;
-                    ctx._obj=ctx.obj = null;
-                });
+                res.save(ctx.obj,ctx._updateData);
             }
-            function del(it){
+            function del(id){
                 (ctx.beforeDel || ng.noop)();
-                res.del(it,function(data){
-                    ctx.lst = data;
-                });
+                res.del({id:id},ctx._updateData);
+            }
+            function updateData(data){
+                ctx.lst = data;
+                ctx._obj=ctx.obj = null;
             }
         }
     }]);
@@ -320,6 +325,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             ctx = ng.extend(ctx, {
                 refresh: refresh,
                 pager: pager,
+                _updateData:updateData,
                 total: 0,
                 params:{filter: ''},
                 filter: {page: 1, perPage: 20}
@@ -329,15 +335,18 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             function refresh(filter,params,newParams) {
                 if (filter) ctx.filter = filter;
                 updateParams(ctx,params,newParams);
-                ctx.res.post(ctx.params, ctx.filter, function (data) {
-                    ctx.lst = data.Items;
-                    ctx.total = data.Total;
-                });
+                ctx.res.post(ctx.params, ctx.filter,ctx._updateData);
             }
 
             function pager(page) {
                 ctx.filter.page = page;
                 refresh();
+            }
+
+            function updateData(data){
+                ctx.lst = data.Items;
+                ctx.total = data.Total;
+                ctx._obj=ctx.obj = null;
             }
         }
     }]);
@@ -1292,85 +1301,6 @@ angular.module('jb.ui')
         };
 
     }]);
-angular.module('jb.ui')
-    .provider('$jbAside', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade-and-slide-right',
-            type: 'aside',
-            placement: null,
-            template: 'jb/ui/aside/aside.tpl.html',
-            contentTemplate: false,
-            container: false,
-            element: null,
-            backdrop: true,
-            keyboard: true,
-            html: true,
-            show: true
-        };
-
-        this.$get = ["$jbModal", function ($jbModal) {
-            function AsideFactory(config) {
-                var $aside = {};
-                var options = angular.extend({}, defaults, config);
-                $aside = $jbModal(options);
-                return $aside;
-            }
-
-            return AsideFactory;
-        }];
-    })
-
-    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                        });
-                    }
-                });
-
-                // Support scope as an object
-              if(  attr.jbAside ) {
-                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                      if (angular.isObject(newValue)) {
-                          angular.extend(scope, newValue);
-                      } else {
-                          scope.content = newValue;
-                      }
-                  }, true);
-              }
-                // Initialize aside
-                var aside = $jbAside(options);
-
-                // Trigger
-                element.on(attr.trigger || 'click', aside.toggle);
-
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (aside) aside.destroy();
-                    options = null;
-                    aside = null;
-                });
-
-            }
-        };
-
-    }]);
 (function() {
     var module = angular.module('jb.ui');
 
@@ -1537,6 +1467,85 @@ angular.module('jb.ui')
     }]);
 
 })();
+angular.module('jb.ui')
+    .provider('$jbAside', function () {
+
+        var defaults = this.defaults = {
+            animation: 'am-fade-and-slide-right',
+            type: 'aside',
+            placement: null,
+            template: 'jb/ui/aside/aside.tpl.html',
+            contentTemplate: false,
+            container: false,
+            element: null,
+            backdrop: true,
+            keyboard: true,
+            html: true,
+            show: true
+        };
+
+        this.$get = ["$jbModal", function ($jbModal) {
+            function AsideFactory(config) {
+                var $aside = {};
+                var options = angular.extend({}, defaults, config);
+                $aside = $jbModal(options);
+                return $aside;
+            }
+
+            return AsideFactory;
+        }];
+    })
+
+    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                        });
+                    }
+                });
+
+                // Support scope as an object
+              if(  attr.jbAside ) {
+                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                      if (angular.isObject(newValue)) {
+                          angular.extend(scope, newValue);
+                      } else {
+                          scope.content = newValue;
+                      }
+                  }, true);
+              }
+                // Initialize aside
+                var aside = $jbAside(options);
+
+                // Trigger
+                element.on(attr.trigger || 'click', aside.toggle);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (aside) aside.destroy();
+                    options = null;
+                    aside = null;
+                });
+
+            }
+        };
+
+    }]);
 angular.module('jb.ui')
     .directive('jbCheckList', function () {
         return {
@@ -3683,6 +3692,57 @@ angular.module('jb.ui')
         };
 
     }]);
+angular.module('jb.ui')
+    .directive('jbRadioList', ["$parse", function ($parse) {
+        return {
+            restrict: 'ECA',
+            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
+            templateUrl: "jb/ui/radioList/radioList.tpl.html",
+            link: function (scope, element, attrs) {
+                if (!angular.isArray(scope.jbSrc)) {
+                    throw "jbSrc must be array!";
+                }
+                scope.selection = '';
+                scope.otherVal = '';
+                setup(scope.jbVal);
+                function setup(val) {
+                    if (val) {
+                        if (scope.jbSrc.indexOf(val) > -1) {
+                            scope.selection = val;
+                        } else if (scope.jbOther) {
+                            scope.selection = 'other';
+                            scope.otherVal = val;
+                        } else {
+                            scope.selection = '';
+                            scope.otherVal = '';
+                        }
+                    }
+                }
+
+                function updateJbVal() {
+                    scope.jbVal = scope.selection === 'other'? scope.otherVal: scope.selection;
+                }
+
+                scope.select = function select(val) {
+                    scope.selection = val;
+                    if (val !== 'other') {
+                        scope.otherVal = '';
+                    }
+                    updateJbVal();
+                };
+
+                scope.$watch('otherVal', function (newval) {
+                    if (newval) {
+                        scope.selection = 'other';
+                    }
+                    updateJbVal();
+                });
+
+                scope.$watch('jbVal', setup);
+            }
+        };
+    }]);
+
 (function() {
     var module = angular.module('jb.ui');
 
@@ -4015,57 +4075,6 @@ angular.module('jb.ui')
 
     }]);
 })();
-angular.module('jb.ui')
-    .directive('jbRadioList', ["$parse", function ($parse) {
-        return {
-            restrict: 'ECA',
-            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
-            templateUrl: "jb/ui/radioList/radioList.tpl.html",
-            link: function (scope, element, attrs) {
-                if (!angular.isArray(scope.jbSrc)) {
-                    throw "jbSrc must be array!";
-                }
-                scope.selection = '';
-                scope.otherVal = '';
-                setup(scope.jbVal);
-                function setup(val) {
-                    if (val) {
-                        if (scope.jbSrc.indexOf(val) > -1) {
-                            scope.selection = val;
-                        } else if (scope.jbOther) {
-                            scope.selection = 'other';
-                            scope.otherVal = val;
-                        } else {
-                            scope.selection = '';
-                            scope.otherVal = '';
-                        }
-                    }
-                }
-
-                function updateJbVal() {
-                    scope.jbVal = scope.selection === 'other'? scope.otherVal: scope.selection;
-                }
-
-                scope.select = function select(val) {
-                    scope.selection = val;
-                    if (val !== 'other') {
-                        scope.otherVal = '';
-                    }
-                    updateJbVal();
-                };
-
-                scope.$watch('otherVal', function (newval) {
-                    if (newval) {
-                        scope.selection = 'other';
-                    }
-                    updateJbVal();
-                });
-
-                scope.$watch('jbVal', setup);
-            }
-        };
-    }]);
-
 (function (ng) {
     "use strict";
     ng.module('jb.ui.table', ['jb.filter']);
@@ -5702,8 +5711,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/select/select.tpl.html',
-    '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
+  $templateCache.put('jb/ui/radioList/radioList.tpl.html',
+    '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
 }]);
 })();
 
@@ -5714,8 +5723,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/radioList/radioList.tpl.html',
-    '<label class="radio-inline" ng-repeat="s in jbSrc"><input type="radio" value="{{s}}" ng-checked="selection==s" ng-click="select(s)"> {{s}}</label> <label class="radio-inline" ng-show="jbOther"><input type="radio" ng-checked="selection==\'other\'" value="other" ng-click="select(\'other\')"> 其他</label> <label class="checkbox-inline" ng-show="jbOther"><input type="text" ng-model="otherVal" class="form-control input-sm"></label>');
+  $templateCache.put('jb/ui/select/select.tpl.html',
+    '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="select"><li ng-if="$showAllNoneButtons"><div class="btn-group" style="margin-bottom: 5px; margin-left: 5px"><button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button> <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button></div></li><li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}"><a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)"><i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i> <span ng-bind="match.label"></span></a></li></ul>');
 }]);
 })();
 
