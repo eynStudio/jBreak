@@ -68,7 +68,7 @@
             }
             function editId(id) {
                 (ctx.beforeEdit || ng.noop)();
-                ctx.obj = id ? res.get({id: id}) : add();
+                ctx.obj = id ? res.get({id: id}) : res.create();
             }
             function save() {
                 (ctx.beforeSave || ng.noop)();
