@@ -238,6 +238,9 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
     function updateParams(ctx,params,newParams) {
         ctx.params = newParams ? params || {} : ng.extend(ctx.params || {}, params || {});
     }
+    function back() {
+        window.history.back();
+    }
 
     module.factory('jbCtx', ["jbRes", function (jbRes) {
         return function(url, params, methods) {
@@ -276,11 +279,14 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 lst: [],
                 res: res,
                 refresh: refresh,
+                back:back,
                 add:add,
                 edit: edit,
                 editId:editId,
                 save: save,
+                saveBk:saveBk,
                 del:del,
+                delBk:delBk,
                 _updateData:updateData
             };
             return ctx;
@@ -308,13 +314,27 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
                 (ctx.beforeSave || ng.noop)();
                 res.save(ctx.obj,ctx._updateData);
             }
+            function saveBk() {
+                (ctx.beforeSave || ng.noop)();
+                res.save(ctx.obj,function(data){
+                    ctx._updateData(data);
+                    back();
+                });
+            }
             function del(id){
                 (ctx.beforeDel || ng.noop)();
                 res.del({id:id},ctx._updateData);
             }
+            function delBk(id){
+                (ctx.beforeDel || ng.noop)();
+                res.del({id:id},function(data){
+                    ctx._updateData(data);
+                    back();
+                });
+            }
             function updateData(data){
                 ctx.lst = data;
-                ctx._obj=ctx.obj = null;
+                //ctx._obj=ctx.obj = null;
             }
         }
     }]);
@@ -346,7 +366,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
             function updateData(data){
                 ctx.lst = data.Items;
                 ctx.total = data.Total;
-                ctx._obj=ctx.obj = null;
+                //ctx._obj=ctx.obj = null;
             }
         }
     }]);
