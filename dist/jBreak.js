@@ -109,13 +109,6 @@ $provide.value("$locale", {
 });
 }]);
 
-angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
-    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-        localStorageServiceProvider
-            .setPrefix('jBreak')
-            .setNotify(true, true);
-    }]);
-
 (function(ng) {
 
     var module = ng.module('jb',[]),
@@ -243,7 +236,7 @@ angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
     var module = ng.module('jb.ctx', ['jb.sys', 'jb.res', 'jb.ctx4gp']);
 
     function updateParams(ctx,params,newParams) {
-        ctx.params = newParams ? params : ng.extend(ctx.params, params);
+        ctx.params = newParams ? params||{} : ng.extend(ctx.params, params||{});
     }
 
     module.factory('jbCtx', ["jbRes", function (jbRes) {
@@ -1213,171 +1206,6 @@ angular.module('jb.util.position', [])
     }]);
 angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position','jb.util.parseOptions']);
 
-angular.module('jb.ui')
-    .provider('$jbAside', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade-and-slide-right',
-            type: 'aside',
-            placement: null,
-            template: 'jb/ui/aside/aside.tpl.html',
-            contentTemplate: false,
-            container: false,
-            element: null,
-            backdrop: true,
-            keyboard: true,
-            html: true,
-            show: true
-        };
-
-        this.$get = ["$jbModal", function ($jbModal) {
-            function AsideFactory(config) {
-                var $aside = {};
-                var options = angular.extend({}, defaults, config);
-                $aside = $jbModal(options);
-                return $aside;
-            }
-
-            return AsideFactory;
-        }];
-    })
-
-    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                        });
-                    }
-                });
-
-                // Support scope as an object
-              if(  attr.jbAside ) {
-                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                      if (angular.isObject(newValue)) {
-                          angular.extend(scope, newValue);
-                      } else {
-                          scope.content = newValue;
-                      }
-                  }, true);
-              }
-                // Initialize aside
-                var aside = $jbAside(options);
-
-                // Trigger
-                element.on(attr.trigger || 'click', aside.toggle);
-
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (aside) aside.destroy();
-                    options = null;
-                    aside = null;
-                });
-
-            }
-        };
-
-    }]);
-angular.module('jb.ui')
-    .provider('$jbAlert', function () {
-        var defaults = this.defaults = {
-            animation: 'am-fade',
-            prefixClass: 'alert',
-            prefixEvent: 'alert',
-            placement: null,
-            template: 'jb/ui/alert/alert.tpl.html',
-            container: false,
-            element: null,
-            backdrop: false,
-            keyboard: true,
-            show: true,
-            // Specific options
-            duration: false,
-            type: false,
-            dismissable: true
-        };
-
-        this.$get = ["$timeout", "$jbModal", function ($timeout, $jbModal) {
-            function AlertFactory(config) {
-                var $alert = {};
-                var options = angular.extend({}, defaults, config);
-                $alert = $jbModal(options);
-
-                // Support scope as string options [/*title, content, */ type, dismissable]
-                $alert.$scope.dismissable = !!options.dismissable;
-                if (options.type) {
-                    $alert.$scope.type = options.type;
-                }
-
-                // Support auto-close duration
-                var show = $alert.show;
-                if (options.duration) {
-                    $alert.show = function () {
-                        show();
-                        $timeout(function () {
-                            $alert.hide();
-                        }, options.duration * 1000);
-                    };
-                }
-                return $alert;
-            }
-
-            return AlertFactory;
-        }];
-    })
-
-    .directive('jbAlert', ["$window", "$sce", "$jbAlert", function ($window, $sce, $jbAlert) {
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                angular.forEach(['title', 'content', 'type'], function (key) {
-                    if (attr[key]) attr.$observe(key, function (newValue, oldValue) {
-                        scope[key] = $sce.trustAsHtml(newValue);
-                    });
-                });
-                if (attr.jbAlert)
-                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
-                        if (angular.isObject(newValue)) {
-                            angular.extend(scope, newValue);
-                        } else {
-                            scope.content = newValue;
-                        }
-                    }, true);
-
-                var alert = $jbAlert(options);
-
-                element.on(attr.trigger || 'click', alert.toggle);
-                scope.$on('$destroy', function () {
-                    if (alert) alert.destroy();
-                    options = null;
-                    alert = null;
-                });
-            }
-        };
-
-    }]);
 (function() {
     var module = angular.module('jb.ui');
 
@@ -1544,6 +1372,171 @@ angular.module('jb.ui')
     }]);
 
 })();
+angular.module('jb.ui')
+    .provider('$jbAlert', function () {
+        var defaults = this.defaults = {
+            animation: 'am-fade',
+            prefixClass: 'alert',
+            prefixEvent: 'alert',
+            placement: null,
+            template: 'jb/ui/alert/alert.tpl.html',
+            container: false,
+            element: null,
+            backdrop: false,
+            keyboard: true,
+            show: true,
+            // Specific options
+            duration: false,
+            type: false,
+            dismissable: true
+        };
+
+        this.$get = ["$timeout", "$jbModal", function ($timeout, $jbModal) {
+            function AlertFactory(config) {
+                var $alert = {};
+                var options = angular.extend({}, defaults, config);
+                $alert = $jbModal(options);
+
+                // Support scope as string options [/*title, content, */ type, dismissable]
+                $alert.$scope.dismissable = !!options.dismissable;
+                if (options.type) {
+                    $alert.$scope.type = options.type;
+                }
+
+                // Support auto-close duration
+                var show = $alert.show;
+                if (options.duration) {
+                    $alert.show = function () {
+                        show();
+                        $timeout(function () {
+                            $alert.hide();
+                        }, options.duration * 1000);
+                    };
+                }
+                return $alert;
+            }
+
+            return AlertFactory;
+        }];
+    })
+
+    .directive('jbAlert', ["$window", "$sce", "$jbAlert", function ($window, $sce, $jbAlert) {
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                angular.forEach(['title', 'content', 'type'], function (key) {
+                    if (attr[key]) attr.$observe(key, function (newValue, oldValue) {
+                        scope[key] = $sce.trustAsHtml(newValue);
+                    });
+                });
+                if (attr.jbAlert)
+                    scope.$watch(attr.jbAlert, function (newValue, oldValue) {
+                        if (angular.isObject(newValue)) {
+                            angular.extend(scope, newValue);
+                        } else {
+                            scope.content = newValue;
+                        }
+                    }, true);
+
+                var alert = $jbAlert(options);
+
+                element.on(attr.trigger || 'click', alert.toggle);
+                scope.$on('$destroy', function () {
+                    if (alert) alert.destroy();
+                    options = null;
+                    alert = null;
+                });
+            }
+        };
+
+    }]);
+angular.module('jb.ui')
+    .provider('$jbAside', function () {
+
+        var defaults = this.defaults = {
+            animation: 'am-fade-and-slide-right',
+            type: 'aside',
+            placement: null,
+            template: 'jb/ui/aside/aside.tpl.html',
+            contentTemplate: false,
+            container: false,
+            element: null,
+            backdrop: true,
+            keyboard: true,
+            html: true,
+            show: true
+        };
+
+        this.$get = ["$jbModal", function ($jbModal) {
+            function AsideFactory(config) {
+                var $aside = {};
+                var options = angular.extend({}, defaults, config);
+                $aside = $jbModal(options);
+                return $aside;
+            }
+
+            return AsideFactory;
+        }];
+    })
+
+    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
+        return {
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
+                });
+
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                        });
+                    }
+                });
+
+                // Support scope as an object
+              if(  attr.jbAside ) {
+                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                      if (angular.isObject(newValue)) {
+                          angular.extend(scope, newValue);
+                      } else {
+                          scope.content = newValue;
+                      }
+                  }, true);
+              }
+                // Initialize aside
+                var aside = $jbAside(options);
+
+                // Trigger
+                element.on(attr.trigger || 'click', aside.toggle);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (aside) aside.destroy();
+                    options = null;
+                    aside = null;
+                });
+
+            }
+        };
+
+    }]);
 angular.module('jb.ui')
     .directive('jbCheckList', function () {
         return {
@@ -5527,6 +5520,13 @@ angular.module('jb.ui')
     );
 })(angular);
 
+angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
+    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('jBreak')
+            .setNotify(true, true);
+    }]);
+
 (function(module) {
 try {
   module = angular.module('jb.ui.tpls');
@@ -5642,8 +5642,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/modal/modal.tpl.html',
-    '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
+  $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
+    '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
 }]);
 })();
 
@@ -5654,8 +5654,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/inputGroupDropdownBtn/inputGroupDropdownBtn.tpl.html',
-    '<div class="input-group-btn"><button class="btn btn-default" jb-dropdown-toggle=""><span class="caret"></span></button><ul class="dropdown-menu pull-right"><li ng-repeat="it in jbSrc"><a ng-click="update(it)">{{it}}</a></li></ul></div>');
+  $templateCache.put('jb/ui/modal/modal.tpl.html',
+    '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
 }]);
 })();
 
@@ -5726,42 +5726,6 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tab.tpl.html',
-    '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
-    '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/tabs/tabset.tpl.html',
-    '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('jb/ui/table/table.tpl.html',
     '<div class="panel panel-default jb-table"><div class="panel-heading"><div ng-repeat="col in meta.cols" class="jb-table-col"></div></div><div class="panel-collapse"><table class="table table-bordered table-hover table-condensed"><thead><tr><th ng-repeat="col in meta.cols" jb-table-th="" class="th">{{col.title}}</th></tr></thead><tbody jb-table-body=""></tbody><tfoot></tfoot></table></div><div class="panel-footer"><jb-pagination ng-if="meta.page" boundary-links="true" total-items="meta.ctx.total" page="meta.ctx.page" max-size="10" items-per-page="meta.filter.perPage" on-select-page="pager(page)" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></jb-pagination></div></div>');
 }]);
@@ -5800,6 +5764,42 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('jb/ui/table/th.tpl.html',
     '<div ng-style="{\'width\':col.width+\'px\'}"><span ng-click="onTitle()">{{col.title}}</span> <span class="jb-th-right"><span ng-if="col.sort!==undefined" class="glyphicon" ng-class="{\'glyphicon-triangle-bottom\':$index%2==1,\'glyphicon-triangle-top\':$index%2==0}"></span> <span ng-if="col.filter!==undefined" class="glyphicon glyphicon-filter"></span> <span class="glyphicon glyphicon-menu-down" jb-pop="pop" data-auto-close="false" data-placement="right-bottom" data-template="jb/ui/table/th-opt.tpl.html"></span></span></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tab.tpl.html',
+    '<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude="">{{heading}}</a></li>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset-titles.tpl.html',
+    '<ul class="nav {{type && \'nav-\' + type}}" ng-class="{\'nav-stacked\': vertical, \'nav-justified\': justified}"></ul>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/tabs/tabset.tpl.html',
+    '<div class="tabbable" ng-class="{\'tabs-right\': direction == \'right\', \'tabs-left\': direction == \'left\', \'tabs-below\': direction == \'below\'}"><div tabset-titles="tabsAbove"></div><div class="tab-content"><div class="tab-pane" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab"></div></div><div tabset-titles="!tabsAbove"></div></div>');
 }]);
 })();
 

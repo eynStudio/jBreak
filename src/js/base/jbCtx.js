@@ -2,7 +2,7 @@
     var module = ng.module('jb.ctx', ['jb.sys', 'jb.res', 'jb.ctx4gp']);
 
     function updateParams(ctx,params,newParams) {
-        ctx.params = newParams ? params : ng.extend(ctx.params, params);
+        ctx.params = newParams ? params||{} : ng.extend(ctx.params, params||{});
     }
 
     module.factory('jbCtx', function (jbRes) {
