@@ -109,6 +109,13 @@ $provide.value("$locale", {
 });
 }]);
 
+angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
+    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('jBreak')
+            .setNotify(true, true);
+    }]);
+
 (function(ng) {
 
     var module = ng.module('jb',[]),
@@ -117,7 +124,10 @@ $provide.value("$locale", {
     module.factory('jb$', function () {
         return {
             nextUid:nextUid,
-            fmt:fmt
+            fmt: fmt,
+            arrContains: arrContains,
+            arrToggle: arrToggle,
+            arrRemove: arrRemove
         };
     });
 
@@ -132,6 +142,23 @@ $provide.value("$locale", {
 
     function nextUid() {
         return '_' + (++uid);
+    }
+
+    function arrContains(array, obj) {
+        return Array.prototype.indexOf.call(array, obj) != -1;
+    }
+
+    function arrToggle(array, obj) {
+        if (arrContains(array, obj)) arrRemove(array, obj);
+        else array.push(obj);
+    }
+
+    function arrRemove(array, value) {
+        var index = array.indexOf(value);
+        if (index >= 0) {
+            array.splice(index, 1);
+        }
+        return index;
     }
 
 })(angular);
@@ -675,8 +702,6 @@ angular.module('jb.sys', [])
 
 })(angular);
 angular.module('jb.be', []);
-
-angular.module('jb.ui', ['ngLocale', 'jb.ui.tpls', 'jb.util', 'jb', 'jb.ui.table', 'jb.zd', 'jb.ui.widget']);
 
 angular.module('jb.util.dateParser', [])
     .provider('$jbDateParser', ["$localeProvider", function ($localeProvider) {
@@ -1235,6 +1260,8 @@ angular.module('jb.util.position', [])
     }]);
 angular.module('jb.util', ['jb.util.dateParser', 'jb.util.position','jb.util.parseOptions']);
 
+angular.module('jb.ui', ['ngLocale', 'jb.ui.tpls', 'jb.util', 'jb', 'jb.ui.table', 'jb.zd', 'jb.ui.widget']);
+
 angular.module('jb.ui')
     .provider('$jbAlert', function () {
         var defaults = this.defaults = {
@@ -1317,85 +1344,6 @@ angular.module('jb.ui')
                     options = null;
                     alert = null;
                 });
-            }
-        };
-
-    }]);
-angular.module('jb.ui')
-    .provider('$jbAside', function () {
-
-        var defaults = this.defaults = {
-            animation: 'am-fade-and-slide-right',
-            type: 'aside',
-            placement: null,
-            template: 'jb/ui/aside/aside.tpl.html',
-            contentTemplate: false,
-            container: false,
-            element: null,
-            backdrop: true,
-            keyboard: true,
-            html: true,
-            show: true
-        };
-
-        this.$get = ["$jbModal", function ($jbModal) {
-            function AsideFactory(config) {
-                var $aside = {};
-                var options = angular.extend({}, defaults, config);
-                $aside = $jbModal(options);
-                return $aside;
-            }
-
-            return AsideFactory;
-        }];
-    })
-
-    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
-
-        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
-
-        return {
-            restrict: 'EAC',
-            scope: true,
-            link: function postLink(scope, element, attr, transclusion) {
-                // Directive options
-                var options = {scope: scope, element: element, show: false};
-                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-                    if (angular.isDefined(attr[key])) options[key] = attr[key];
-                });
-
-                // Support scope as data-attrs
-                angular.forEach(['title', 'content'], function (key) {
-                    if (attr[key]) {
-                        attr.$observe(key, function (newValue, oldValue) {
-                            scope[key] = $sce.trustAsHtml(newValue);
-                        });
-                    }
-                });
-
-                // Support scope as an object
-              if(  attr.jbAside ) {
-                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
-                      if (angular.isObject(newValue)) {
-                          angular.extend(scope, newValue);
-                      } else {
-                          scope.content = newValue;
-                      }
-                  }, true);
-              }
-                // Initialize aside
-                var aside = $jbAside(options);
-
-                // Trigger
-                element.on(attr.trigger || 'click', aside.toggle);
-
-                // Garbage collection
-                scope.$on('$destroy', function () {
-                    if (aside) aside.destroy();
-                    options = null;
-                    aside = null;
-                });
-
             }
         };
 
@@ -1567,67 +1515,84 @@ angular.module('jb.ui')
 
 })();
 angular.module('jb.ui')
-    .directive('jbCheckList', function () {
+    .provider('$jbAside', function () {
+
+        var defaults = this.defaults = {
+            animation: 'am-fade-and-slide-right',
+            type: 'aside',
+            placement: null,
+            template: 'jb/ui/aside/aside.tpl.html',
+            contentTemplate: false,
+            container: false,
+            element: null,
+            backdrop: true,
+            keyboard: true,
+            html: true,
+            show: true
+        };
+
+        this.$get = ["$jbModal", function ($jbModal) {
+            function AsideFactory(config) {
+                var $aside = {};
+                var options = angular.extend({}, defaults, config);
+                $aside = $jbModal(options);
+                return $aside;
+            }
+
+            return AsideFactory;
+        }];
+    })
+
+    .directive('jbAside', ["$window", "$sce", "$jbAside", function ($window, $sce, $jbAside) {
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
+
         return {
-            restrict: 'ECA',
-            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
-            templateUrl: "jb/ui/checkList/checkList.tpl.html",
-            link: function (scope, element, attrs) {
-
-                if (!angular.isArray(scope.jbSrc)) {
-                    throw "jbSrc must be array!";
-                }
-
-                setup(scope.jbVal);
-
-                function setup(val) {
-                    var other = [];
-                    scope.selection = [];
-                    val.split(';').forEach(function (item) {
-                        if (scope.jbSrc.indexOf(item) > -1) {
-                            scope.selection.push(item);
-                        } else if (scope.jbOther && item) {
-                            other.push(item);
-                        }
-                    });
-                    scope.otherCk = (other.length>0);
-                    scope.otherVal =other.join(';');
-                }
-
-                function updateJbVal() {
-                    var val = scope.selection;
-                    if (scope.jbOther && scope.otherVal) {
-                        val.push(scope.otherVal);
-                    }
-                    scope.jbVal = val.join(';');
-                }
-
-                scope.toggleOther = function toggleOther() {
-                    scope.otherCk = !scope.otherCk;
-                    if (!scope.otherCk) {
-                        scope.otherVal = '';
-                    }
-                    updateJbVal();
-                };
-                scope.toggleSelection = function toggleSelection(item) {
-                    var idx = scope.selection.indexOf(item);
-                    if (idx > -1) {
-                        scope.selection.splice(idx, 1);
-                    }
-                    else {
-                        scope.selection.push(item);
-                    }
-                    updateJbVal();
-                };
-                scope.$watch('otherVal', function (newval) {
-                    scope.otherCk = !!newval;
-                    updateJbVal();
+            restrict: 'EAC',
+            scope: true,
+            link: function postLink(scope, element, attr, transclusion) {
+                // Directive options
+                var options = {scope: scope, element: element, show: false};
+                angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
+                    if (angular.isDefined(attr[key])) options[key] = attr[key];
                 });
-                scope.$watch('jbVal', setup);
+
+                // Support scope as data-attrs
+                angular.forEach(['title', 'content'], function (key) {
+                    if (attr[key]) {
+                        attr.$observe(key, function (newValue, oldValue) {
+                            scope[key] = $sce.trustAsHtml(newValue);
+                        });
+                    }
+                });
+
+                // Support scope as an object
+              if(  attr.jbAside ) {
+                  scope.$watch(attr.jbAside, function (newValue, oldValue) {
+                      if (angular.isObject(newValue)) {
+                          angular.extend(scope, newValue);
+                      } else {
+                          scope.content = newValue;
+                      }
+                  }, true);
+              }
+                // Initialize aside
+                var aside = $jbAside(options);
+
+                // Trigger
+                element.on(attr.trigger || 'click', aside.toggle);
+
+                // Garbage collection
+                scope.$on('$destroy', function () {
+                    if (aside) aside.destroy();
+                    options = null;
+                    aside = null;
+                });
+
             }
         };
-    });
 
+    }]);
 angular.module('jb.ui')
 
     .provider('$jbDate', function () {
@@ -2798,6 +2763,68 @@ angular.module('jb.ui')
         };
 
     }]);
+angular.module('jb.ui')
+    .directive('jbCheckList', function () {
+        return {
+            restrict: 'ECA',
+            scope: {jbSrc: '=', jbVal: '=', jbOther: '='},
+            templateUrl: "jb/ui/checkList/checkList.tpl.html",
+            link: function (scope, element, attrs) {
+
+                if (!angular.isArray(scope.jbSrc)) {
+                    throw "jbSrc must be array!";
+                }
+
+                setup(scope.jbVal);
+
+                function setup(val) {
+                    var other = [];
+                    scope.selection = [];
+                    val.split(';').forEach(function (item) {
+                        if (scope.jbSrc.indexOf(item) > -1) {
+                            scope.selection.push(item);
+                        } else if (scope.jbOther && item) {
+                            other.push(item);
+                        }
+                    });
+                    scope.otherCk = (other.length>0);
+                    scope.otherVal =other.join(';');
+                }
+
+                function updateJbVal() {
+                    var val = scope.selection;
+                    if (scope.jbOther && scope.otherVal) {
+                        val.push(scope.otherVal);
+                    }
+                    scope.jbVal = val.join(';');
+                }
+
+                scope.toggleOther = function toggleOther() {
+                    scope.otherCk = !scope.otherCk;
+                    if (!scope.otherCk) {
+                        scope.otherVal = '';
+                    }
+                    updateJbVal();
+                };
+                scope.toggleSelection = function toggleSelection(item) {
+                    var idx = scope.selection.indexOf(item);
+                    if (idx > -1) {
+                        scope.selection.splice(idx, 1);
+                    }
+                    else {
+                        scope.selection.push(item);
+                    }
+                    updateJbVal();
+                };
+                scope.$watch('otherVal', function (newval) {
+                    scope.otherCk = !!newval;
+                    updateJbVal();
+                });
+                scope.$watch('jbVal', setup);
+            }
+        };
+    });
+
 angular.module('jb.ui')
     .directive('draggable', function () {
         return {
@@ -5548,13 +5575,6 @@ angular.module('jb.ui')
         }]
     );
 })(angular);
-
-angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb', 'jb.sys', 'jb.auth', 'jb.ctx', 'jb.res', 'jb.filter', 'jb.ui', 'jb.zd'])
-    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-        localStorageServiceProvider
-            .setPrefix('jBreak')
-            .setNotify(true, true);
-    }]);
 
 (function(module) {
 try {
