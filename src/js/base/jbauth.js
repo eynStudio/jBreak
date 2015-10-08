@@ -1,18 +1,20 @@
-﻿angular.module('jb.auth', ['ui.router', 'LocalStorageModule'])
-    .factory('jbAuthUser', function (localStorageService) {
+﻿(function(ng) {
+    var module = ng.module('jb.auth', ['ui.router', 'LocalStorageModule']);
+
+    module.factory('jbAuthUser', function (localStorageService) {
         function Xm() {
             return localStorageService.get('user');
         }
 
-        var user = {
+        return {
             Xm: Xm,
             isAuth: function () {
                 return !!Xm();
             }
         };
-        return user;
-    })
-    .provider('jbAuth', function () {
+    });
+
+    module.provider('jbAuth', function () {
         var buffer = [], nextPath;
 
         function pushToBuffer(config, deferred, curPath) {
@@ -42,10 +44,10 @@
             }
 
             return {
-                pushToBuffer:pushToBuffer,
-                loginConfirmed: function (id,name) {
-                    localStorageService.set('token',id);
-                    localStorageService.set('user',name);
+                pushToBuffer: pushToBuffer,
+                loginConfirmed: function (id, name) {
+                    localStorageService.set('token', id);
+                    localStorageService.set('user', name);
                     $rootScope.$broadcast('event:authConfirmed');
                     retryAll();
                     if (nextPath) {
@@ -58,8 +60,9 @@
                 }
             };
         };
-    })
-    .factory('jbAuthInterceptor', function ($rootScope,$q,$location,jbAuth,localStorageService) {
+    });
+
+    module.factory('jbAuthInterceptor', function ($rootScope, $q, $location, jbAuth, localStorageService) {
         return {
             'request': function (config) {
                 config.headers = config.headers || {};
@@ -89,8 +92,10 @@
                 return $q.reject(rejection);
             }
         };
-    })
-    .config(function ($httpProvider, jbAuthProvider) {
+    });
+
+    module.config(function ($httpProvider) {
         $httpProvider.interceptors.push('jbAuthInterceptor');
     });
 
+})(angular);

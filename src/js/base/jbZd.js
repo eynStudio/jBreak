@@ -1,41 +1,34 @@
 (function (ng) {
-    var module = ng.module('jb.zd', ['jb.res']);
+    var module = ng.module('jb.zd', ['restangular']);
 
     module.provider('$jbZd', function () {
-
-        this.$get = function ($cacheFactory, jbRes, $q) {
+        this.$get = function ($cacheFactory, Restangular, $q) {
             var zd = $cacheFactory('jbZd');
-            var res = jbRes('/api/IbZd/:id', {id: '@id'});
-
-            function get(bq) {
-                var d = $q.defer();
-                var lst = zd.get(bq);
-
-                if (lst) d.resolve(lst);
-                else {
-                    res.query({bq: bq}, function (data) {
-                        zd.put(bq, data);
-                        d.resolve(data);
-                    });
-                }
-                return d.promise;
-            }
-
             return {
                 get: get
             };
+
+            function get(bq) {
+                var lst = zd.get(bq);
+                if (lst) return $q.when(lst);
+
+                return Restangular.allUrl('jbzd', '/api/jbzd/bq/' + bq).getList().then(function (data) {
+                    zd.put(bq, data.plain());
+                    return data.plain();
+                });
+            }
         };
     });
 
-    module.directive('jbSelectZd', function ($jbZd) {
+    module.directive('jbSeleZd', function ($jbZd) {
         return {
             replace: true,
             scope: {
-                jbSelectZd: '@'
+                jbSeleZd: '@'
             },
             template: '<select class="form-control" ng-options="zd.Dm as zd.Mc for zd in $src"></select>',
             link: function (scope, element, attrs) {
-                $jbZd.get(scope.jbSelectZd).then(function (data) {
+                $jbZd.get(scope.jbSeleZd).then(function (data) {
                     scope.$src = data;
                 });
             }
@@ -48,22 +41,18 @@
                 jbZd: '@',
                 jbZdDm: '='
             },
-            template: '<span>{{zd.Mc}}</span>',
+            template: '{{zd.Mc}}',
             link: function (scope, element, attrs) {
+                scope.$watch('jbZdDm', updateZd);
 
-                $jbZd.get(scope.jbZd).then(function (data) {
-                    scope.zd = getZd(data);
-                });
-
-                function getZd(src) {
-                    for (var i = 0, l = src.length; i < l; i++) {
-                        if (src[i].Dm == scope.jbZdDm) return src[i];
-                    }
-                    return null;
+                function updateZd() {
+                    if (scope.jbZdDm)
+                        $jbZd.get(scope.jbZd).then(function (data) {
+                            scope.zd = _.find(data, {'Dm': scope.jbZdDm});
+                        });
                 }
             }
         };
     });
-
 
 })(angular);

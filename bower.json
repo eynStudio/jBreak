@@ -21,6 +21,7 @@
     "kindeditor": "https://github.com/kindsoft/kindeditor.git",
     "angular-local-storage": "latest",
     "bootstrap-additions": "latest",
+    "lodash": "latest",
     "angular-ui-utils": "latest"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "angular-sanitize": "latest",
     "angular-i18n": "latest",
     "angular-ui-router": "latest",
+    "restangular": "latest",
     "bootstrap": "latest"
   }
 }

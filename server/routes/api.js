@@ -200,7 +200,7 @@ var phones = [
     }
 ];
 
-router.get('/phones?:page', function (req, res, next) {
+router.get('/phones/actpage', function (req, res, next) {
     var page = req.params.page;
     res.json({
         Total: phones.length,
@@ -208,7 +208,7 @@ router.get('/phones?:page', function (req, res, next) {
     });
 });
 
-router.post('/phones', function (req, res, next) {
+router.post('/phones/actpage', function (req, res, next) {
     var page = req.body.page;
     res.json({
         Total: phones.length,
@@ -217,7 +217,7 @@ router.post('/phones', function (req, res, next) {
 });
 
 
-router.get('/IbZd', function (req, res, next) {
+router.get('/jbzd/bq/:bq', function (req, res, next) {
     res.json([
         {Id: '0', Dm: 'dell', Mc: 'DELL'},
         {Id: '1', Dm: 'hp', Mc: 'HP'},

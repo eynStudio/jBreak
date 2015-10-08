@@ -1,140 +1,168 @@
 (function (ng) {
-    var module = ng.module('jb.ctx', ['jb.sys', 'jb.res', 'jb.ctx4gp']);
+    var module = ng.module('jb.ctx', ['restangular']);
 
     function updateParams(ctx,params,newParams) {
         ctx.params = newParams ? params || {} : ng.extend(ctx.params || {}, params || {});
     }
-    function back() {
-        window.history.back();
-    }
 
-    module.factory('jbCtx', function (jbRes) {
-        return function(url, params, methods) {
-            var res = jbRes(url, params, methods);
-            var ctx = {
-                res: res,
-                refresh: refresh,
-                save: save,
-                get:res.get,
-                remove:res.remove
+    module.provider('$jbCtx', function () {
+        this.$get = function ($q,Restangular,$state,$stateParams) {
+            return {
+                lst:ctxLst,
+                page:ctxPage,
+                obj:ctxObj,
+                lstObj:ctxLstObj,
+                pageObj:ctxPageObj,
+                objSub:ctxObjSub
             };
-            return ctx;
 
-            function refresh(params,newParams) {
-                updateParams(ctx,params,newParams);
-                ctx.obj = res.get(ctx.params);
+            function ctxLstObj(name,pCtx,id){
+                var ctx=ctxLst(name,pCtx);
+                ctx.eCtx=ctxObj(name,ctx,id||'id');
+                return ctx;
             }
 
-            function save() {
-                (ctx.beforeSave || ng.noop)();
-                res.save(ctx.obj, function (data) {
-                    ctx.obj=data;
+            function ctxPageObj(name,pCtx,id){
+                var ctx=ctxPage(name,pCtx);
+                ctx.eCtx=ctxObj(name,ctx,id||'id');
+                return ctx;
+            }
+
+            function ctxLst(name,pCtx) {
+                var ctx = {
+                    name: name,
+                    p: pCtx,
+                    lst: [],
+                    res: res,
+                    one:one,
+                    refresh: refresh,
+                    updateData: updateData
+                };
+                return ctx;
+                function res() {
+                    return pCtx ? pCtx.res() : Restangular;
+                }
+                function one(id) {
+                    return res().one(name,id||'');
+                }
+                function refresh() {
+                    return res().all(name).getList().then(ctx.updateData);
+                }
+
+                function updateData(data) {
+                    ctx.lst = data;
+                    return ctx.lst;
+                }
+            }
+
+            function ctxPage(name,pCtx){
+                var ctx=ng.extend( ctxLst(name,pCtx),{
+                    refresh: refresh,
+                    updateData:updateData,
+                    pager: pager,
+                    total: 0,
+                    params:{filter: ''},
+                    filter: {page: 1, perPage: 20}
                 });
-            }
-        }
-    });
+                return ctx;
 
-    module.factory('jbCtxL', function (jbRes) {
-        return function(url, params, methods) {
-            var defaults = {
-                save: {method: 'put', isArray: true}
-            };
-            methods = ng.extend(defaults, methods);
-            var res = jbRes(url, params, methods);
-            var ctx = {
-                lst: [],
-                res: res,
-                refresh: refresh,
-                back:back,
-                add:add,
-                edit: edit,
-                editId:editId,
-                save: save,
-                saveBk:saveBk,
-                del:del,
-                delBk:delBk,
-                _updateData:updateData
-            };
-            return ctx;
-
-            function refresh(params,newParams) {
-                updateParams(ctx,params,newParams);
-                res.query(ctx.params,ctx._updateData);
+                function refresh(filter,params,newParams) {
+                    if (filter) ctx.filter = filter;
+                    updateParams(ctx,params,newParams);
+                    return ctx.res().all(name).all('actpage').post(ctx.filter).then(ctx.updateData);
+                }
+                function pager(page) {
+                    ctx.filter.page = page;
+                    refresh();
+                }
+                function updateData(data) {
+                    ctx.lst = data.Items;
+                    ctx.total=data.Total;
+                    return ctx.lst;
+                }
             }
 
-            function add() {
-                (ctx.beforeAdd || ng.noop)();
-                ctx._obj=null;
-                ctx.obj=res.create();
-            }
-            function edit(it) {
-                (ctx.beforeEdit || ng.noop)();
-                ctx._obj = it;
-                ctx.obj = ng.copy(it);
-            }
-            function editId(id) {
-                (ctx.beforeEdit || ng.noop)();
-                ctx.obj = id ? res.get({id: id}) : res.create();
-            }
-            function save() {
-                (ctx.beforeSave || ng.noop)();
-                res.save(ctx.obj,ctx._updateData);
-            }
-            function saveBk() {
-                (ctx.beforeSave || ng.noop)();
-                res.save(ctx.obj,function(data){
-                    ctx._updateData(data);
-                    back();
-                });
-            }
-            function del(id){
-                (ctx.beforeDel || ng.noop)();
-                res.del({id:id},ctx._updateData);
-            }
-            function delBk(id){
-                (ctx.beforeDel || ng.noop)();
-                res.del({id:id},function(data){
-                    ctx._updateData(data);
-                    back();
-                });
-            }
-            function updateData(data){
-                ctx.lst = data;
-                //ctx._obj=ctx.obj = null;
-            }
-        }
-    });
+            function ctxObj(name,pCtx, paramId) {
+                var pRefresh=pCtx.refresh;
+                var ctx = {
+                    p:pCtx,
+                    name:name,
+                    res: res,
+                    refresh:refresh,
+                    editId: editId,
+                    view:view,
+                    save: save,
+                    saveRefresh: saveRefresh,
+                    del: del,
+                    updateData:updateData,
+                    curId:''
+                };
+                return ctx;
 
-    module.factory('jbCtxP', function (jbCtxL) {
-        return function(url, params, methods) {
-            var ctx = jbCtxL(url, params, methods);
-            ctx = ng.extend(ctx, {
-                refresh: refresh,
-                pager: pager,
-                _updateData:updateData,
-                total: 0,
-                params:{filter: ''},
-                filter: {page: 1, perPage: 20}
-            });
-            return ctx;
+                function refresh(){return  res().get().then(ctx.updateData);}
+                function updateData(data){ctx.obj=data; return ctx.obj;}
+                function view(id){ctx.curId = id;}
+                function editId(id) {
+                    view(id);
+                    if(id) return refresh();
+                    else return res().post().then(ctx.updateData);
+                }
 
-            function refresh(filter,params,newParams) {
-                if (filter) ctx.filter = filter;
-                updateParams(ctx,params,newParams);
-                ctx.res.post(ctx.params, ctx.filter,ctx._updateData);
+                function res() {
+                    return pCtx.res().one(name,ctx.curId);
+                }
+
+                function save() {
+                    return ctx.obj.save().then(pRefresh);
+                }
+
+                function saveRefresh() {
+                    return save().then(function () {
+                        if ($stateParams[paramId] === ''){
+                            ctx.curId= $stateParams[paramId]=ctx.obj.Id;
+                            $state.go('.', $stateParams);
+                        }
+                    });
+                }
+
+                function del() {
+                    return ctx.obj.remove().then(pRefresh);
+                }
             }
 
-            function pager(page) {
-                ctx.filter.page = page;
-                refresh();
-            }
+            function ctxObjSub(name,pCtx) {
+                var ctx = {
+                    p: pCtx,
+                    name: name,
+                    add: function () {
+                        ctx._obj = ctx.obj = null;
+                    },
+                    edit: function (obj) {
+                        ctx._obj = obj;
+                        ctx.obj = ng.copy(obj);
+                    },
+                    save: save,
+                    saveRefresh: save,
+                    del: del
+                };
+                return ctx;
 
-            function updateData(data){
-                ctx.lst = data.Items;
-                ctx.total = data.Total;
-                //ctx._obj=ctx.obj = null;
+                function save() {
+                    if (ctx._obj) {
+                        ctx._obj = ng.extend(ctx._obj, ctx.obj);
+                    } else {
+                        ctx._obj = ng.extend({}, ctx.obj);
+                        ctx.p.obj[name].push(ctx._obj);
+                    }
+                }
+
+                function del() {
+                    if (ctx._obj) {
+                        ctx.p.obj[name] = _.without(ctx.p.obj[name], ctx._obj);
+                    }
+                }
             }
-        }
+        };
     });
 
 })(angular);

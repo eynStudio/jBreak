@@ -1,5 +1,4 @@
 (function (ng) {
-    "use strict";
     var module = ng.module('jb.filter', []);
 
     module.provider('$jbFilter', function () {

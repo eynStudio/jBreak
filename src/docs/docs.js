@@ -1,7 +1,11 @@
 angular.module('jbdemo', ['ngRoute', 'jb.ui', 'ngSanitize', 'jb.ctx', 'demo.tpls', 'ui.router', 'jb.zd'])
-    .factory('phoneCtx',function(jbCtxP){
-        var ctx=jbCtxP('/api/phones/:id',{ id: '@id' });
+    .factory('phoneCtx',function($jbCtx){
+        var ctx=$jbCtx.page('phones');
 
         return ctx;
+    })
+    .run(function(Restangular){
+        Restangular.setBaseUrl('/api');
+
     })
 ;

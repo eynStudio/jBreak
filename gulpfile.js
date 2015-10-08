@@ -18,6 +18,8 @@ var merge = require('merge-stream');
 var buid_dir = 'server/public/';
 
 var endSrc = [
+    'src/vendor/lodash/lodash.min.js',
+    'src/vendor/restangular/dist/restangular.min.js',
     'src/vendor/angular-i18n/angular-locale_zh-cn.js',
     'src/js/**/*.js',
     buid_dir + 'js/jb-tpls.js',
