@@ -425,33 +425,43 @@ $provide.value("$locale", {
             }
 
             function ctxObj(name,pCtx, paramId) {
-                var pRefresh=pCtx.refresh;
+                var pRefresh = pCtx ? pCtx.refresh || ng.noop : ng.noop;
                 var ctx = {
-                    p:pCtx,
-                    name:name,
+                    p: pCtx,
+                    name: name,
                     res: res,
-                    refresh:refresh,
+                    refresh: refresh,
                     editId: editId,
-                    view:view,
+                    view: view,
                     save: save,
                     saveRefresh: saveRefresh,
                     del: del,
-                    updateData:updateData,
-                    curId:''
+                    updateData: updateData,
+                    curId: ''
                 };
                 return ctx;
 
-                function refresh(){return  res().get().then(ctx.updateData);}
-                function updateData(data){ctx.obj=data; return ctx.obj;}
-                function view(id){ctx.curId = id;}
+                function refresh() {
+                    return res().get().then(ctx.updateData);
+                }
+
+                function updateData(data) {
+                    ctx.obj = data;
+                    return ctx.obj;
+                }
+
+                function view(id) {
+                    ctx.curId = id;
+                }
+
                 function editId(id) {
                     view(id);
-                    if(id) return refresh();
+                    if (id) return refresh();
                     else return res().post().then(ctx.updateData);
                 }
 
                 function res() {
-                    return pCtx.res().one(name,ctx.curId);
+                    return pCtx.res().one(name, ctx.curId);
                 }
 
                 function save() {
@@ -460,8 +470,8 @@ $provide.value("$locale", {
 
                 function saveRefresh() {
                     return save().then(function () {
-                        if ($stateParams[paramId] === ''){
-                            ctx.curId= $stateParams[paramId]=ctx.obj.Id;
+                        if ($stateParams[paramId] === '') {
+                            ctx.curId = $stateParams[paramId] = ctx.obj.Id;
                             $state.go('.', $stateParams);
                         }
                     });
