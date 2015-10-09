@@ -442,7 +442,7 @@ $provide.value("$locale", {
                 return ctx;
 
                 function refresh() {
-                    return res().get().then(ctx.updateData);
+                    return ctx.res().get().then(ctx.updateData);
                 }
 
                 function updateData(data) {
@@ -457,7 +457,7 @@ $provide.value("$locale", {
                 function editId(id) {
                     view(id);
                     if (id) return refresh();
-                    else return res().post().then(ctx.updateData);
+                    else return ctx.res().post().then(ctx.updateData);
                 }
 
                 function res() {
