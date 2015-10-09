@@ -82,7 +82,10 @@
                 }
             }
 
-            function ctxObj(name,pCtx, paramId) {
+            function ctxObj(name,pCtx, paramId,refreshParent,useParentRes) {
+                refreshParent=refreshParent!=false;
+                useParentRes=useParentRes!=false;
+
                 var pRefresh = pCtx ? pCtx.refresh || ng.noop : ng.noop;
                 var curRes;
                 var ctx = {
@@ -139,7 +142,7 @@
                 }
 
                 function updateRes(){
-                    curRes= (pCtx ? pCtx.res() : Restangular).one(name, ctx.curId);
+                    curRes= (useParentRes ? pCtx.res() : Restangular).one(name, ctx.curId);
                 }
             }
 
