@@ -84,10 +84,11 @@
 
             function ctxObj(name,pCtx, paramId) {
                 var pRefresh = pCtx ? pCtx.refresh || ng.noop : ng.noop;
+                var curRes;
                 var ctx = {
                     p: pCtx,
                     name: name,
-                    res: res,
+                    res: function res() { return curRes; },
                     refresh: refresh,
                     editId: editId,
                     view: view,
@@ -97,6 +98,7 @@
                     updateData: updateData,
                     curId: ''
                 };
+                updateRes();
                 return ctx;
 
                 function refresh() {
@@ -110,16 +112,13 @@
 
                 function view(id) {
                     ctx.curId = id;
+                    updateRes();
                 }
 
                 function editId(id) {
                     view(id);
                     if (id) return refresh();
                     else return ctx.res().post().then(ctx.updateData);
-                }
-
-                function res() {
-                    return pCtx.res().one(name, ctx.curId);
                 }
 
                 function save() {
@@ -137,6 +136,10 @@
 
                 function del() {
                     return ctx.obj.remove().then(pRefresh);
+                }
+
+                function updateRes(){
+                    curRes= (pCtx ? pCtx.res() : Restangular).one(name, ctx.curId);
                 }
             }
 
