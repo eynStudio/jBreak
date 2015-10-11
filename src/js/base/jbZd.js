@@ -39,7 +39,8 @@
         return {
             scope: {
                 jbZd: '@',
-                jbZdDm: '='
+                jbZdDm: '=',
+                jbZdJc:'='
             },
             template: '{{zd.Mc}}',
             link: function (scope, element, attrs) {
@@ -48,7 +49,7 @@
                 function updateZd() {
                     if (scope.jbZdDm)
                         $jbZd.get(scope.jbZd).then(function (data) {
-                            scope.zd = _.find(data, {'Dm': scope.jbZdDm});
+                            scope.zd = scope.jbZdJc ? _.find(data, {'Jc': scope.jbZdDm}) : _.find(data, {'Dm': scope.jbZdDm});
                         });
                 }
             }
