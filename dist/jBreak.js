@@ -213,6 +213,13 @@ $provide.value("$locale", {
 });
 }]);
 
+angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb',  'jb.auth', 'jb.ctx','jb.filter', 'jb.ui', 'jb.zd'])
+    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('jBreak')
+            .setNotify(true, true);
+    }]);
+
 (function(ng) {
 
     var module = ng.module('jb',[]),
@@ -5502,13 +5509,6 @@ angular.module('jb.ui')
     );
 })(angular);
 
-angular.module('jBreak', ['LocalStorageModule', 'ngLocale', 'jb',  'jb.auth', 'jb.ctx','jb.filter', 'jb.ui', 'jb.zd'])
-    .config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-        localStorageServiceProvider
-            .setPrefix('jBreak')
-            .setNotify(true, true);
-    }]);
-
 (function(module) {
 try {
   module = angular.module('jb.ui.tpls');
@@ -5638,6 +5638,30 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('jb/ui/modal/modal.tpl.html',
     '<div class="modal fade in" tabindex="-1" role="dialog"><div class="modal-backdrop"></div><div class="modal-dialog" ng-class="{\'modal-sm\': $size == \'sm\', \'modal-lg\': $size == \'lg\',\'center\':$placement==\'center\'}"><div class="modal-content"><div class="modal-header" ng-show="title"><button type="button" class="close" ng-click="$hide()">&times;</button><h4 class="modal-title" ng-bind="title"></h4></div><div class="modal-body" ng-bind="content"></div><div class="modal-footer"><button type="button" class="btn btn-primary" ng-click="$ok()">确定</button> <button type="button" class="btn btn-default" ng-click="$hide()">取消</button></div></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/pager/pager.tpl.html',
+    '<ul class="pager"><li ng-repeat="page in pages" ng-class="{disabled: page.disabled, previous: page.previous, next: page.next}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('jb.ui.tpls');
+} catch (e) {
+  module = angular.module('jb.ui.tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('jb/ui/pager/pagination.tpl.html',
+    '<ul class="pagination"><li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
 }]);
 })();
 
@@ -5792,20 +5816,8 @@ try {
   module = angular.module('jb.ui.tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/pager/pager.tpl.html',
-    '<ul class="pager"><li ng-repeat="page in pages" ng-class="{disabled: page.disabled, previous: page.previous, next: page.next}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('jb.ui.tpls');
-} catch (e) {
-  module = angular.module('jb.ui.tpls', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('jb/ui/pager/pagination.tpl.html',
-    '<ul class="pagination"><li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li></ul>');
+  $templateCache.put('jb/ui/zd/zd.tpl.html',
+    '<select class="form-control" ng-options="zd.Dm as zd.Mc for zd in $src | orderBy:[\'Qz\',\'Dm\']"></select>');
 }]);
 })();
 
