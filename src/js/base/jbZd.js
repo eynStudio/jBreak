@@ -20,39 +20,4 @@
         };
     });
 
-    module.directive('jbSeleZd', function ($jbZd) {
-        return {
-            replace: true,
-            scope: {
-                jbSeleZd: '@'
-            },
-            template: '<select class="form-control" ng-options="zd.Dm as zd.Mc for zd in $src"></select>',
-            link: function (scope, element, attrs) {
-                $jbZd.get(scope.jbSeleZd).then(function (data) {
-                    scope.$src = data;
-                });
-            }
-        };
-    });
-
-    module.directive('jbZd', function ($jbZd) {
-        return {
-            scope: {
-                jbZd: '@',
-                jbZdDm: '='
-            },
-            template: '{{zd.Mc}}',
-            link: function (scope, element, attrs) {
-                scope.$watch('jbZdDm', updateZd);
-
-                function updateZd() {
-                    if (scope.jbZdDm)
-                        $jbZd.get(scope.jbZd).then(function (data) {
-                            scope.zd = _.find(data, {'Dm': scope.jbZdDm});
-                        });
-                }
-            }
-        };
-    });
-
 })(angular);

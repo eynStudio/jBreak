@@ -22,7 +22,9 @@
                 jbZd: '@',
                 jbZdDm: '='
             },
-            template: '{{zd.Mc}}',
+            template: function (elem, attrs) {
+                return attrs.jbZdJc ? '{{zd.Jc}}' : '{{zd.Mc}}';
+            },
             link: function (scope, element, attrs) {
                 scope.$watch('jbZdDm', updateZd);
 
